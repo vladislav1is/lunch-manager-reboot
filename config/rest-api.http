@@ -1,0 +1,53 @@
+###### curl samples (application deployed at application context `restaurant-voting`).
+###    > For windows use `Git Bash`
+########################################################################################################################
+### User resources
+########################################################################################################################
+
+### get User
+GET http://localhost:8080/api/users/1
+
+### delete User
+DELETE http://localhost:8080/api/users/2
+
+### get Users
+GET http://localhost:8080/api/users
+
+### create User
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "newUser",
+  "email": "newUser@mail.ru",
+  "password": "123456",
+  "enabled": false,
+  "registered": "2021-11-02T21:45:00",
+  "roles": [
+    "USER"
+  ]
+}
+
+### update User
+PUT http://localhost:8080/api/users/1
+Content-Type: application/json
+
+{
+  "name": "updatedUser",
+  "email": "updated@yandex.ru",
+  "password": "newPass",
+  "enabled": true,
+  "registered": "2021-11-02T21:45:00",
+  "roles": [
+    "ADMIN"
+  ]
+}
+
+### get User by user@yandex.ru
+GET http://localhost:8080/api/users/by?email=user@yandex.ru
+
+### enable User
+PATCH http://localhost:8080/api/users/1?enabled=false
+
+
+

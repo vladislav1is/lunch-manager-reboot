@@ -14,7 +14,6 @@ spring:
         default_batch_fetch_size: 20
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
-        id.new_generator_mappings: false
   datasource:
     # ImMemory
     url: jdbc:h2:mem:voting
@@ -22,3 +21,27 @@ spring:
     username: sa
     password:
   h2.console.enabled: true
+
+  data.rest:
+    # https://docs.spring.io/spring-data/rest/docs/current/reference/html/#getting-started.basic-settings
+    basePath: /api
+    returnBodyOnCreate: true
+
+  security:
+    # https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#security-properties
+    user:
+      name: user
+      password: password
+      roles: USER
+
+logging:
+  level:
+    root: WARN
+    com.redfox.restaurantvoting: DEBUG
+    org.springframework.security.web.FilterChainProxy: DEBUG
+
+server.servlet:
+  encoding:
+    charset: UTF-8 # Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly
+    enabled: true  # Enable http encoding support
+    force: true

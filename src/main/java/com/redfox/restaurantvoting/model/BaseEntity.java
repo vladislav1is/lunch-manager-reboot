@@ -15,13 +15,15 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class BaseEntity implements Persistable<Integer> {
+public abstract class BaseEntity implements Persistable<Integer>, HasId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
     //  doesn't work for hibernate lazy proxy
+    @JsonIgnore
+    @Override
     public int id() {
         Assert.notNull(id, "Entity must have id");
         return id;
