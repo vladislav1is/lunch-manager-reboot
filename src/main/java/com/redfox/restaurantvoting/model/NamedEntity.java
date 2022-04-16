@@ -10,7 +10,6 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-
 @MappedSuperclass
 @Getter
 @Setter

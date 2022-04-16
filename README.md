@@ -31,3 +31,10 @@ P.S.: Предположим, что API будет использоваться
 поверх этого.
 
 -----
+
+## Описание (API)
+
+curl samples (application deployed at application context `restaurant-voting`).
+> For windows use `Git Bash`
+
+[REST API documentation](http://localhost:8080/restaurant-voting/swagger-ui.html)

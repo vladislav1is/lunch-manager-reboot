@@ -30,3 +30,10 @@ Design and implement a JSON API using  Spring Data JPA / Hibernate / Spring MVC 
 P.S.: Assume that your API will be used by a frontend developer to build frontend on top of that.
 
 -----
+
+## Description (API)
+
+curl samples (application deployed at application context `restaurant-voting`).
+> For windows use `Git Bash`
+
+[REST API documentation](http://localhost:8080/restaurant-voting/swagger-ui.html)
