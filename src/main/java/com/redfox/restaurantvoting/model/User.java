@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 
+import static java.time.LocalDateTime.now;
+
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_uk")})
 @Getter
@@ -43,7 +45,8 @@ public class User extends NamedEntity {
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
     @NotNull
-    private LocalDateTime registered;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime registered = now().truncatedTo(ChronoUnit.MINUTES);
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
@@ -55,7 +58,7 @@ public class User extends NamedEntity {
     private Set<Role> roles;
 
     public User(Integer id, String name, String email, String password, Role role, Role... roles) {
-        this(id, name, email, password, true, LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), EnumSet.of(role, roles));
+        this(id, name, email, password, true, now().truncatedTo(ChronoUnit.MINUTES), EnumSet.of(role, roles));
     }
 
     public User(Integer id, String name, String email, String password, boolean enabled, LocalDateTime registered, Collection<Role> roles) {
