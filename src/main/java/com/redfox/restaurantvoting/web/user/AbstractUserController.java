@@ -2,6 +2,7 @@ package com.redfox.restaurantvoting.web.user;
 
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.UserRepository;
+import com.redfox.restaurantvoting.util.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,5 +23,9 @@ public abstract class AbstractUserController {
     public void delete(int id) {
         log.info("delete {}", id);
         repository.deleteExisted(id);
+    }
+
+    protected User prepareAndSave(User user) {
+        return repository.save(Users.prepareToSave(user));
     }
 }

@@ -53,7 +53,7 @@ public class UserController extends AbstractUserController {
     public ResponseEntity<User> createWithLocation(@RequestBody User user) {
         log.info("create {}", user);
         checkNew(user);
-        User created = repository.save(user);
+        User created = prepareAndSave(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -66,7 +66,7 @@ public class UserController extends AbstractUserController {
     public void update(@RequestBody User user, @PathVariable int id) {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
-        repository.save(user);
+        prepareAndSave(user);
     }
 
     @GetMapping("/by")
