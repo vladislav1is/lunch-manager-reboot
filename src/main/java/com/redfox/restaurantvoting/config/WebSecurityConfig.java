@@ -1,6 +1,7 @@
 package com.redfox.restaurantvoting.config;
 
 import com.redfox.restaurantvoting.AuthUser;
+import com.redfox.restaurantvoting.model.Role;
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -51,10 +52,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .httpBasic()
+                .antMatchers("/api/account/register").anonymous()
+                .antMatchers("/api/account").hasRole(Role.USER.name())
+                .antMatchers("/api/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/**").authenticated()
+                .and().httpBasic()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();
     }
