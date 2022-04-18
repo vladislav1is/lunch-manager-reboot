@@ -22,11 +22,6 @@ spring:
     password:
   h2.console.enabled: true
 
-  data.rest:
-    # https://docs.spring.io/spring-data/rest/docs/current/reference/html/#getting-started.basic-settings
-    basePath: /api
-    returnBodyOnCreate: true
-
   # https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
   cache:
     cache-names: users

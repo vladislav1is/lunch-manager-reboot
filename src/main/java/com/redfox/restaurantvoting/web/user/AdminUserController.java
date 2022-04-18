@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -20,13 +21,12 @@ import static com.redfox.restaurantvoting.util.validation.ValidationUtil.assureI
 import static com.redfox.restaurantvoting.util.validation.ValidationUtil.checkNew;
 
 @RestController
-@RequestMapping(value = UserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 //  TODO: cache only most requested data!
 @CacheConfig(cacheNames = "users")
-public class UserController extends AbstractUserController {
-
-    static final String REST_URL = "/api/users";
+public class AdminUserController extends AbstractUserController {
+    static final String REST_URL = "/api/admin/users";
 
     @Override
     @GetMapping("/{id}")
@@ -50,7 +50,7 @@ public class UserController extends AbstractUserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
-    public ResponseEntity<User> createWithLocation(@RequestBody User user) {
+    public ResponseEntity<User> createWithLocation(@RequestBody @Valid User user) {
         log.info("create {}", user);
         checkNew(user);
         User created = prepareAndSave(user);
@@ -63,13 +63,13 @@ public class UserController extends AbstractUserController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
-    public void update(@RequestBody User user, @PathVariable int id) {
+    public void update(@RequestBody @Valid User user, @PathVariable int id) {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
         prepareAndSave(user);
     }
 
-    @GetMapping("/by")
+    @GetMapping("/by-email")
     public ResponseEntity<User> getByEmail(@RequestParam String email) {
         log.info("getByEmail {}", email);
         return ResponseEntity.of(repository.findByEmailIgnoreCase(email));

@@ -1,10 +1,10 @@
-package com.redfox.restaurantvoting.web;
+package com.redfox.restaurantvoting.web.user;
 
 import com.redfox.restaurantvoting.AuthUser;
 import com.redfox.restaurantvoting.model.User;
-import com.redfox.restaurantvoting.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Set;
 
@@ -23,12 +24,13 @@ import static com.redfox.restaurantvoting.util.validation.ValidationUtil.assureI
 import static com.redfox.restaurantvoting.util.validation.ValidationUtil.checkNew;
 
 @RestController
-@RequestMapping(value = "/api/account")
+@RequestMapping(value = ProfileUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 @Slf4j
-public class AccountController {
-
-    private final UserRepository userRepository;
+// TODO: cache only most requested data!
+@CacheConfig(cacheNames = "users")
+public class ProfileUserController extends AbstractUserController {
+    static final String REST_URL = "/api/profile";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(@AuthenticationPrincipal AuthUser authUser) {
@@ -38,30 +40,27 @@ public class AccountController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(value = "users", allEntries = true)
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
-        log.info("delete {}", authUser);
-        userRepository.deleteById(authUser.id());
+        super.delete(authUser.id());
     }
 
-    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
-    @CacheEvict(value = "users", allEntries = true)
-    public ResponseEntity<User> register(@RequestBody User user) {
+    @CacheEvict(allEntries = true)
+    public ResponseEntity<User> register(@RequestBody @Valid User user) {
         log.info("register {}", user);
         checkNew(user);
         user.setRoles(Set.of(USER));
         User created = prepareToSave(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/account")
-                .build().toUri();
+                .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CachePut(value = "users", key = "#authUser.username")
-    public void update(@RequestBody User user, @AuthenticationPrincipal AuthUser authUser) {
+    @CachePut(key = "#authUser.username")
+    public void update(@RequestBody @Valid User user, @AuthenticationPrincipal AuthUser authUser) {
         log.info("update {} to {}", authUser, user);
         User oldUser = authUser.getUser();
         assureIdConsistent(user, oldUser.id());
