@@ -17,8 +17,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static com.redfox.restaurantvoting.util.validation.ValidationUtil.assureIdConsistent;
-import static com.redfox.restaurantvoting.util.validation.ValidationUtil.checkNew;
+import static com.redfox.restaurantvoting.util.validation.Validations.assureIdConsistent;
+import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)

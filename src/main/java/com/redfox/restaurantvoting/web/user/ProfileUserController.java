@@ -20,14 +20,14 @@ import java.util.Set;
 
 import static com.redfox.restaurantvoting.model.Role.USER;
 import static com.redfox.restaurantvoting.util.Users.prepareToSave;
-import static com.redfox.restaurantvoting.util.validation.ValidationUtil.assureIdConsistent;
-import static com.redfox.restaurantvoting.util.validation.ValidationUtil.checkNew;
+import static com.redfox.restaurantvoting.util.validation.Validations.assureIdConsistent;
+import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 
 @RestController
 @RequestMapping(value = ProfileUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 @Slf4j
-// TODO: cache only most requested data!
+//  TODO: cache only most requested data!
 @CacheConfig(cacheNames = "users")
 public class ProfileUserController extends AbstractUserController {
     static final String REST_URL = "/api/profile";

@@ -1,12 +1,11 @@
 package com.redfox.restaurantvoting.util.validation;
 
-import com.redfox.restaurantvoting.model.HasId;
 import com.redfox.restaurantvoting.error.IllegalRequestDataException;
-import com.redfox.restaurantvoting.error.NotFoundException;
+import com.redfox.restaurantvoting.model.HasId;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ValidationUtil {
+public class Validations {
 
     public static void checkNew(HasId bean) {
         if (!bean.isNew()) {
@@ -25,7 +24,7 @@ public class ValidationUtil {
 
     public static void checkModification(int count, int id) {
         if (count == 0) {
-            throw new NotFoundException("Entity with id=" + id + " not found");
+            throw new IllegalRequestDataException("Entity with id=" + id + " not found");
         }
     }
 }
