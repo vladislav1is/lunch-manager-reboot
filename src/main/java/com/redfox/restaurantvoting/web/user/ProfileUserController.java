@@ -16,7 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Set;
+import java.util.EnumSet;
 
 import static com.redfox.restaurantvoting.model.Role.USER;
 import static com.redfox.restaurantvoting.util.Users.prepareToSave;
@@ -50,7 +50,7 @@ public class ProfileUserController extends AbstractUserController {
     public ResponseEntity<User> register(@RequestBody @Valid User user) {
         log.info("register {}", user);
         checkNew(user);
-        user.setRoles(Set.of(USER));
+        user.setRoles(EnumSet.of(USER));
         User created = prepareToSave(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();

@@ -3,6 +3,8 @@ package com.redfox.restaurantvoting.util.validation;
 import com.redfox.restaurantvoting.error.IllegalRequestDataException;
 import com.redfox.restaurantvoting.model.HasId;
 import lombok.experimental.UtilityClass;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.lang.NonNull;
 
 @UtilityClass
 public class Validations {
@@ -26,5 +28,12 @@ public class Validations {
         if (count == 0) {
             throw new IllegalRequestDataException("Entity with id=" + id + " not found");
         }
+    }
+
+    //  https://stackoverflow.com/a/65442410/548473
+    @NonNull
+    public static Throwable getRootCause(@NonNull Throwable t) {
+        Throwable rootCause = NestedExceptionUtils.getRootCause(t);
+        return rootCause != null ? rootCause : t;
     }
 }
