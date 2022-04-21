@@ -1,6 +1,6 @@
 package com.redfox.restaurantvoting.config;
 
-import com.redfox.restaurantvoting.AuthUser;
+import com.redfox.restaurantvoting.web.AuthUser;
 import com.redfox.restaurantvoting.model.Role;
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.UserRepository;

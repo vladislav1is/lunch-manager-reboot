@@ -1,4 +1,4 @@
-package com.redfox.restaurantvoting;
+package com.redfox.restaurantvoting.web;
 
 import com.redfox.restaurantvoting.model.User;
 import lombok.Getter;
