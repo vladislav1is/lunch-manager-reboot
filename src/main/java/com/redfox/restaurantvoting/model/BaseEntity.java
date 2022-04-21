@@ -1,6 +1,7 @@
 package com.redfox.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.redfox.restaurantvoting.HasId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.data.domain.Persistable;

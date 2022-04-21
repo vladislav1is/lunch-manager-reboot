@@ -2,6 +2,7 @@ package com.redfox.restaurantvoting.web.user;
 
 import com.redfox.restaurantvoting.AuthUser;
 import com.redfox.restaurantvoting.model.User;
+import com.redfox.restaurantvoting.to.UserTo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -11,15 +12,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.EnumSet;
 
-import static com.redfox.restaurantvoting.model.Role.USER;
-import static com.redfox.restaurantvoting.util.Users.prepareToSave;
+import static com.redfox.restaurantvoting.util.Users.createNewFromTo;
+import static com.redfox.restaurantvoting.util.Users.updateFromTo;
 import static com.redfox.restaurantvoting.util.validation.Validations.assureIdConsistent;
 import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 
@@ -47,11 +48,10 @@ public class ProfileUserController extends AbstractUserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     @CacheEvict(allEntries = true)
-    public ResponseEntity<User> register(@RequestBody @Valid User user) {
-        log.info("register {}", user);
-        checkNew(user);
-        user.setRoles(EnumSet.of(USER));
-        User created = prepareToSave(user);
+    public ResponseEntity<User> register(@RequestBody @Valid UserTo userTo) {
+        log.info("register {}", userTo);
+        checkNew(userTo);
+        User created = prepareAndSave(createNewFromTo(userTo));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
@@ -59,15 +59,12 @@ public class ProfileUserController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
     @CachePut(key = "#authUser.username")
-    public void update(@RequestBody @Valid User user, @AuthenticationPrincipal AuthUser authUser) {
-        log.info("update {} to {}", authUser, user);
-        User oldUser = authUser.getUser();
-        assureIdConsistent(user, oldUser.id());
-        user.setRoles(oldUser.getRoles());
-        if (user.getPassword() == null) {
-            user.setPassword(oldUser.getPassword());
-        }
-        prepareToSave(user);
+    public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
+        log.info("update {} to {}", authUser, userTo);
+        assureIdConsistent(userTo, authUser.id());
+        User user = authUser.getUser();
+        prepareAndSave(updateFromTo(user, userTo));
     }
 }

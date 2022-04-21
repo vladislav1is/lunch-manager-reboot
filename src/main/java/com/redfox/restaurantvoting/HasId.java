@@ -1,4 +1,4 @@
-package com.redfox.restaurantvoting.model;
+package com.redfox.restaurantvoting;
 
 import org.springframework.util.Assert;
 

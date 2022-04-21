@@ -1,7 +1,7 @@
 package com.redfox.restaurantvoting.util.validation;
 
 import com.redfox.restaurantvoting.error.IllegalRequestDataException;
-import com.redfox.restaurantvoting.model.HasId;
+import com.redfox.restaurantvoting.HasId;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;

@@ -1,6 +1,7 @@
 package com.redfox.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.redfox.restaurantvoting.HasIdAndEmail;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -26,7 +28,9 @@ import static java.time.LocalDateTime.now;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true, exclude = {"password"})
-public class User extends NamedEntity implements Serializable {
+public class User extends NamedEntity implements HasIdAndEmail, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
@@ -44,7 +48,7 @@ public class User extends NamedEntity implements Serializable {
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
     private boolean enabled;
 
-    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
+    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime registered = now().truncatedTo(ChronoUnit.MINUTES);
