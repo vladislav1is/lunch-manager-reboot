@@ -1,5 +1,15 @@
 package com.redfox.restaurantvoting.web.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.redfox.restaurantvoting.model.Role;
+import com.redfox.restaurantvoting.model.User;
+import com.redfox.restaurantvoting.util.JsonUtil;
+
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+
+import static java.time.LocalDateTime.now;
+
 public class UserTestUtil {
     public static final int USER_ID = 1;
     public static final int ADMIN_ID = 2;
@@ -7,4 +17,19 @@ public class UserTestUtil {
 
     public static final String USER_MAIL = "user@yandex.ru";
     public static final String ADMIN_MAIL = "admin@gmail.com";
+
+    public static final User user = new User(USER_ID, "User", USER_MAIL, "password", Role.USER);
+    public static final User admin = new User(ADMIN_ID, "Admin", ADMIN_MAIL, "admin", Role.ADMIN, Role.USER);
+
+    public static User getNew() {
+        return new User(null, "New", "new@gmail.com", "newPass", false, now().truncatedTo(ChronoUnit.MINUTES), Collections.singleton(Role.USER));
+    }
+
+    public static User getUpdated() {
+        return new User(USER_ID, "Updated", USER_MAIL, "newPass", false, now().truncatedTo(ChronoUnit.MINUTES), Collections.singleton(Role.ADMIN));
+    }
+
+    public static String jsonWithPassword(User user, String passw) throws JsonProcessingException {
+        return JsonUtil.writeAdditionProps(user, "password", passw);
+    }
 }

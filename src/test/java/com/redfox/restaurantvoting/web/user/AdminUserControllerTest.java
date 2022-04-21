@@ -1,5 +1,6 @@
 package com.redfox.restaurantvoting.web.user;
 
+import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.UserRepository;
 import com.redfox.restaurantvoting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,29 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .andDo(print());
 
         assertFalse(userRepository.findById(USER_ID).isPresent());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void update() throws Exception {
+        User updated = UserTestUtil.getUpdated();
+        updated.setId(null);
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(updated, "newPass")))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void createWithLocation() throws Exception {
+        User newUser = UserTestUtil.getNew();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(newUser, "newPass")))
+                .andDo(print())
+                .andExpect(status().isCreated());
     }
 
     @Test
