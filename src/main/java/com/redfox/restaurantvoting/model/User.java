@@ -2,6 +2,7 @@ package com.redfox.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.redfox.restaurantvoting.HasIdAndEmail;
+import com.redfox.restaurantvoting.mapper.Default;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -77,6 +78,11 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
 
     public User(User u) {
         this(u.id, u.name, u.email, u.password, u.enabled, u.registered, u.roles);
+    }
+
+    @Default
+    public User(Integer id, String name, String email, String password) {
+        this(id, name, email, password, true, now().truncatedTo(ChronoUnit.MINUTES), EnumSet.of(Role.USER));
     }
 
     public void setRoles(Collection<Role> roles) {

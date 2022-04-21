@@ -1,10 +1,10 @@
 package com.redfox.restaurantvoting.web.user;
 
+import com.redfox.restaurantvoting.mapper.UserMapper;
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.UserRepository;
 import com.redfox.restaurantvoting.to.UserTo;
 import com.redfox.restaurantvoting.util.JsonUtil;
-import com.redfox.restaurantvoting.util.Users;
 import com.redfox.restaurantvoting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,9 @@ class ProfileUserControllerTest extends AbstractControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Test
     void getUnAuth() throws Exception {
@@ -55,7 +58,7 @@ class ProfileUserControllerTest extends AbstractControllerTest {
     @Test
     void register() throws Exception {
         UserTo newTo = new UserTo(null, "newName", "newemail@ya.ru", "newPassword");
-        User newUser = Users.createNewFromTo(newTo);
+        User newUser = userMapper.toEntity(newTo);
 
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -79,6 +82,6 @@ class ProfileUserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        MATCHER.assertMatch(userRepository.getById(USER_ID), Users.updateFromTo(new User(user), updatedTo));
+        MATCHER.assertMatch(userRepository.getById(USER_ID), userMapper.updateFromTo(new User(user), updatedTo));
     }
 }
