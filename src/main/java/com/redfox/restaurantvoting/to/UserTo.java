@@ -1,6 +1,7 @@
 package com.redfox.restaurantvoting.to;
 
 import com.redfox.restaurantvoting.HasIdAndEmail;
+import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
@@ -16,6 +17,7 @@ public class UserTo extends NamedTo implements HasIdAndEmail {
     @Email
     @NotBlank
     @Size(max = 100)
+    @NoHtml // https://stackoverflow.com/questions/17480809
     String email;
 
     @NotBlank

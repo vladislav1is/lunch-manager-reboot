@@ -114,4 +114,16 @@ class ProfileUserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString(EXCEPTION_DUPLICATE_EMAIL)));
     }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void updateHtmlUnsafe() throws Exception {
+        User updated = UserTestUtil.getUpdated();
+        updated.setName("<script>alert(123)</script>");
+        perform(MockMvcRequestBuilders.put(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
 }

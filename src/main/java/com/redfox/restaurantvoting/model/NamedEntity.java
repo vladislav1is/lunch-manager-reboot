@@ -1,5 +1,6 @@
 package com.redfox.restaurantvoting.model;
 
+import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public abstract class NamedEntity extends BaseEntity {
     @Column(name = "name", nullable = false)
     @NotBlank
     @Size(min = 2, max = 100)
+    @NoHtml
     protected String name;
 
     protected NamedEntity(Integer id, String name) {

@@ -3,6 +3,7 @@ package com.redfox.restaurantvoting.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.redfox.restaurantvoting.HasIdAndEmail;
 import com.redfox.restaurantvoting.mapper.Default;
+import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -37,6 +38,7 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     @Email
     @NotBlank
     @Size(max = 100)
+    @NoHtml // https://stackoverflow.com/questions/17480809
     private String email;
 
     @Column(name = "password", nullable = false)

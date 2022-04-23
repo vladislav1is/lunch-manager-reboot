@@ -1,5 +1,6 @@
 package com.redfox.restaurantvoting.to;
 
+import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,6 +12,7 @@ import javax.validation.constraints.Size;
 public class NamedTo extends BaseTo {
     @NotBlank
     @Size(min = 2, max = 100)
+    @NoHtml
     protected String name;
 
     public NamedTo(Integer id, String name) {
