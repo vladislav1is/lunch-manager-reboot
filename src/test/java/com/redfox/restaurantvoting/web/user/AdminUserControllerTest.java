@@ -47,7 +47,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MATCHER.contentJson(admin));
+                .andExpect(USER_MATCHER.contentJson(admin));
     }
 
     @Test
@@ -56,7 +56,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MATCHER.contentJson(admin, user));
+                .andExpect(USER_MATCHER.contentJson(admin, user));
     }
 
     @Test
@@ -65,7 +65,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL + "by-email?email=" + ADMIN_MAIL))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MATCHER.contentJson(admin));
+                .andExpect(USER_MATCHER.contentJson(admin));
     }
 
     @Test
@@ -88,7 +88,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        MATCHER.assertMatch(userRepository.getById(USER_ID), getUpdated());
+        USER_MATCHER.assertMatch(userRepository.getById(USER_ID), getUpdated());
     }
 
     @Test
@@ -101,11 +101,11 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
 
-        User created = MATCHER.readFromJson(action);
+        User created = USER_MATCHER.readFromJson(action);
         int newId = created.id();
         newUser.setId(newId);
-        MATCHER.assertMatch(created, newUser);
-        MATCHER.assertMatch(userRepository.getById(newId), newUser);
+        USER_MATCHER.assertMatch(created, newUser);
+        USER_MATCHER.assertMatch(userRepository.getById(newId), newUser);
     }
 
     @Test
