@@ -6,9 +6,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.redfox.restaurantvoting.util.validation.Validations.checkModification;
+
 @Transactional(readOnly = true)
 public interface UserRepository extends BaseRepository<User> {
 
     @Query("SELECT u FROM User u WHERE u.email = LOWER(:email)")
     Optional<User> findByEmailIgnoreCase(String email);
+
+    default Optional<User> getExistedEmail(String email) {
+        Optional<User> bean = findByEmailIgnoreCase(email);
+        checkModification(bean.isEmpty(), email);
+        return bean;
+    }
 }

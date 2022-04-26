@@ -1,7 +1,8 @@
 package com.redfox.restaurantvoting.util.validation;
 
-import com.redfox.restaurantvoting.error.IllegalRequestDataException;
 import com.redfox.restaurantvoting.HasId;
+import com.redfox.restaurantvoting.error.IllegalRequestDataException;
+import com.redfox.restaurantvoting.error.NotFoundException;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
@@ -24,9 +25,21 @@ public class Validations {
         }
     }
 
+    public static void checkModification(boolean isEmpty, int id) {
+        if (isEmpty) {
+            throw new NotFoundException("Entity with id=" + id + " not found");
+        }
+    }
+
+    public static void checkModification(boolean isEmpty, String email) {
+        if (isEmpty) {
+            throw new NotFoundException("Entity with email=" + email + " not found");
+        }
+    }
+
     public static void checkModification(int count, int id) {
         if (count == 0) {
-            throw new IllegalRequestDataException("Entity with id=" + id + " not found");
+            throw new NotFoundException("Entity with id=" + id + " not found");
         }
     }
 

@@ -26,13 +26,18 @@ public abstract class AbstractUserController {
 
     public ResponseEntity<User> get(int id) {
         log.info("get {}", id);
-        return ResponseEntity.of(repository.findById(id));
+        return ResponseEntity.of(repository.getExisted(id));
     }
 
     @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
         log.info("delete {}", id);
         repository.deleteExisted(id);
+    }
+
+    public ResponseEntity<User> getByEmail(String email) {
+        log.info("getByEmail {}", email);
+        return ResponseEntity.of(repository.getExistedEmail(email));
     }
 
     protected User prepareAndSave(User user) {
