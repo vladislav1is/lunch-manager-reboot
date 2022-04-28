@@ -6,7 +6,6 @@ import com.redfox.restaurantvoting.util.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
@@ -24,20 +23,10 @@ public abstract class AbstractUserController {
         binder.addValidators(emailValidator);
     }
 
-    public ResponseEntity<User> get(int id) {
-        log.info("get {}", id);
-        return ResponseEntity.of(repository.getExisted(id));
-    }
-
     @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
         log.info("delete {}", id);
         repository.deleteExisted(id);
-    }
-
-    public ResponseEntity<User> getByEmail(String email) {
-        log.info("getByEmail {}", email);
-        return ResponseEntity.of(repository.getExistedEmail(email));
     }
 
     protected User prepareAndSave(User user) {

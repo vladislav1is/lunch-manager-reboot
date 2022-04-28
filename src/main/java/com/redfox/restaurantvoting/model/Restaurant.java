@@ -2,6 +2,7 @@ package com.redfox.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -18,9 +19,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true, exclude = "menuItems")
 public class Restaurant extends NamedEntity {
-
     @Column(name = "address")
     @Size(max = 1024)
+    @NoHtml
     @Nullable
     private String address;
 
@@ -28,12 +29,12 @@ public class Restaurant extends NamedEntity {
     private boolean enabled = true;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
-    @OnDelete(action = OnDeleteAction.CASCADE) //   https://stackoverflow.com/a/44988100/548473
+    @OnDelete(action = OnDeleteAction.CASCADE)  // https://stackoverflow.com/a/44988100/548473
     @JsonIgnore
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) //  https://stackoverflow.com/a/27964775/548473
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) // https://stackoverflow.com/a/27964775/548473
     private List<MenuItem> menuItems;
 
-    public Restaurant(Integer id, String name, String address, List<MenuItem> menuItems) {
+    public Restaurant(Integer id, String name, @Nullable String address, List<MenuItem> menuItems) {
         super(id, name);
         this.address = address;
         this.menuItems = menuItems;

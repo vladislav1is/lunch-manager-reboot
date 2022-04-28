@@ -50,5 +50,6 @@ public class Vote extends BaseEntity {
         this.actualDate = actualDate;
         this.actualTime = actualTime;
         this.restaurant = restaurant;
+        this.restaurantId = restaurant.id();
     }
 }

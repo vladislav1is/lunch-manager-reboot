@@ -28,10 +28,10 @@ import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 public class AdminUserController extends AbstractUserController {
     static final String REST_URL = "/api/admin/users";
 
-    @Override
     @GetMapping("/{id}")
     public ResponseEntity<User> get(@PathVariable int id) {
-        return super.get(id);
+        log.info("get {}", id);
+        return ResponseEntity.of(repository.getExisted(id));
     }
 
     @Override
@@ -69,10 +69,10 @@ public class AdminUserController extends AbstractUserController {
         prepareAndSave(user);
     }
 
-    @Override
     @GetMapping("/by-email")
     public ResponseEntity<User> getByEmail(@RequestParam String email) {
-        return super.getByEmail(email);
+        log.info("getByEmail {}", email);
+        return ResponseEntity.of(repository.getExistedEmail(email));
     }
 
     @PatchMapping("/{id}")

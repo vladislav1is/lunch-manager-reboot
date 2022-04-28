@@ -1,6 +1,5 @@
 package com.redfox.restaurantvoting.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.redfox.restaurantvoting.HasId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -18,21 +17,18 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEntity implements Persistable<Integer>, HasId {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY) // https://stackoverflow.com/a/28025008/548473
     protected Integer id;
 
     //  doesn't work for hibernate lazy proxy
-    @JsonIgnore
     @Override
     public int id() {
         Assert.notNull(id, "Entity must have id");
         return id;
     }
 
-    @JsonIgnore
     @Override
     public boolean isNew() {
         return id == null;

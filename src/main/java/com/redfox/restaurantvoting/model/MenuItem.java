@@ -19,7 +19,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString(callSuper = true, exclude = {"restaurant", "dishRef"})
 public class MenuItem extends BaseEntity {
-
     @Column(name = "actual_date", nullable = false)
     @NotNull
     private LocalDate actualDate;
@@ -46,6 +45,8 @@ public class MenuItem extends BaseEntity {
         super(id);
         this.actualDate = actualDate;
         this.restaurant = restaurant;
+        this.restaurantId = restaurant.id();
         this.dishRef = dishRef;
+        this.dishRefId = dishRef.id();
     }
 }
