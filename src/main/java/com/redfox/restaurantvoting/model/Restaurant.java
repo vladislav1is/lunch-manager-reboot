@@ -34,9 +34,8 @@ public class Restaurant extends NamedEntity {
     @JsonInclude(JsonInclude.Include.NON_EMPTY) // https://stackoverflow.com/a/27964775/548473
     private List<MenuItem> menuItems;
 
-    public Restaurant(Integer id, String name, @Nullable String address, List<MenuItem> menuItems) {
+    public Restaurant(Integer id, String name, @Nullable String address) {
         super(id, name);
         this.address = address;
-        this.menuItems = menuItems;
     }
 }

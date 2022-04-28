@@ -24,7 +24,7 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
             JOIN FETCH r.menuItems mi
             JOIN FETCH mi.dishRef d
             WHERE r.enabled=true AND mi.actualDate=:date AND d.enabled=true
-            ORDER BY r.name ASC, d.name ASC
+            ORDER BY r.name, d.name ASC
             """)
     List<Restaurant> getWithMenuByDate(LocalDate date);
 

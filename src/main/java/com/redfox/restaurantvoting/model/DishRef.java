@@ -26,8 +26,8 @@ public class DishRef extends NamedEntity {
     private boolean enabled = true;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "restaurant_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Restaurant restaurant;
 

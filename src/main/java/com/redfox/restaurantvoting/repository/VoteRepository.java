@@ -13,8 +13,8 @@ public interface VoteRepository extends BaseRepository<Vote> {
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM Vote v WHERE v.restaurantId=:id")
-    void deleteByRestaurantId(int id);
+    @Query("DELETE FROM Vote v WHERE v.restaurantId=:restaurantId")
+    void deleteByRestaurantId(int restaurantId);
 
     @Query("SELECT v FROM Vote v WHERE v.actualDate=:date AND v.user.id=:userId")
     Vote getByDateAndUserId(LocalDate date, int userId);

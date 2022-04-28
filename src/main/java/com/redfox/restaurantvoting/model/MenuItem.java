@@ -24,8 +24,8 @@ public class MenuItem extends BaseEntity {
     private LocalDate actualDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "restaurant_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Restaurant restaurant;
 
@@ -41,7 +41,7 @@ public class MenuItem extends BaseEntity {
     @Column(name = "dish_ref_id", insertable = false, updatable = false)
     private int dishRefId;
 
-    public MenuItem(Integer id, LocalDate actualDate, Restaurant restaurant, DishRef dishRef) {
+    public MenuItem(Integer id, @NotNull LocalDate actualDate, Restaurant restaurant, DishRef dishRef) {
         super(id);
         this.actualDate = actualDate;
         this.restaurant = restaurant;

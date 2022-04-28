@@ -18,7 +18,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(callSuper = true, exclude = {"user", "restaurant"})
+@ToString(callSuper = true)
 public class Vote extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -35,21 +35,14 @@ public class Vote extends BaseEntity {
     @NotNull
     private LocalTime actualTime;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "restaurant_id")
-    @JsonIgnore
-    private Restaurant restaurant;
-
-    @Column(name = "restaurant_id", insertable = false, updatable = false)
+    @Column(name = "restaurant_id")
     private int restaurantId;
 
-    public Vote(Integer id, User user, LocalDate actualDate, LocalTime actualTime, Restaurant restaurant) {
+    public Vote(Integer id, @NotNull User user, @NotNull LocalDate actualDate, @NotNull LocalTime actualTime, int restaurantId) {
         super(id);
         this.user = user;
         this.actualDate = actualDate;
         this.actualTime = actualTime;
-        this.restaurant = restaurant;
-        this.restaurantId = restaurant.id();
+        this.restaurantId = restaurantId;
     }
 }
