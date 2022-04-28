@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.redfox.restaurantvoting.web.restaurant.RestaurantTestData.*;
-import static com.redfox.restaurantvoting.web.user.UserTestUtil.ADMIN_MAIL;
-import static com.redfox.restaurantvoting.web.user.UserTestUtil.USER_MAIL;
+import static com.redfox.restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
+import static com.redfox.restaurantvoting.web.user.UserTestData.USER_MAIL;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

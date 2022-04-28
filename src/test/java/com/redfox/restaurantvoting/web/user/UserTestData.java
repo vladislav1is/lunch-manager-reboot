@@ -11,7 +11,7 @@ import java.util.Collections;
 
 import static java.time.LocalDateTime.now;
 
-public class UserTestUtil {
+public class UserTestData {
     public static final Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "password");
 
     public static final int USER_ID = 1;

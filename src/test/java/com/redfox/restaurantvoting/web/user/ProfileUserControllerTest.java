@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.redfox.restaurantvoting.web.user.ProfileUserController.REST_URL;
 import static com.redfox.restaurantvoting.web.user.UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL;
-import static com.redfox.restaurantvoting.web.user.UserTestUtil.*;
+import static com.redfox.restaurantvoting.web.user.UserTestData.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -39,8 +39,8 @@ class ProfileUserControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER_MAIL)
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
-                .andExpect(status().isOk())
                 .andDo(print())
+                .andExpect(status().isOk())
                 //  https://jira.spring.io/browse/SPR-14472
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(user));
@@ -118,7 +118,7 @@ class ProfileUserControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void updateHtmlUnsafe() throws Exception {
-        User updated = UserTestUtil.getUpdated();
+        User updated = UserTestData.getUpdated();
         updated.setName("<script>alert(123)</script>");
         perform(MockMvcRequestBuilders.put(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
