@@ -13,6 +13,9 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface MenuItemRepository extends BaseRepository<MenuItem> {
 
+    @Query("SELECT mi FROM MenuItem mi WHERE mi.id=:id AND mi.restaurant.id=:restaurantId")
+    Optional<MenuItem> getByRestaurantIdAndMenuItem(int restaurantId, int id);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM MenuItem mi WHERE mi.restaurant.id=:restaurantId")
@@ -20,9 +23,6 @@ public interface MenuItemRepository extends BaseRepository<MenuItem> {
 
     @Query("SELECT mi FROM MenuItem mi WHERE mi.restaurant.id=:restaurantId ORDER BY mi.actualDate DESC, mi.dishRef.name ASC")
     List<MenuItem> getByRestaurantId(int restaurantId);
-
-    @Query("SELECT mi FROM MenuItem mi WHERE mi.id=:id AND mi.restaurant.id=:restaurantId")
-    Optional<MenuItem> getByRestaurantIdAndMenuItem(int restaurantId, int id);
 
     @Query("SELECT mi from MenuItem mi WHERE mi.restaurant.id=:restaurantId AND mi.actualDate = :date ORDER BY mi.dishRef.name ASC")
     List<MenuItem> getByRestaurantIdAndDate(int restaurantId, LocalDate date);
@@ -32,7 +32,7 @@ public interface MenuItemRepository extends BaseRepository<MenuItem> {
             WHERE mi.restaurant.id=:restaurantId AND mi.actualDate >= :startDate AND mi.actualDate < :endDate
             ORDER BY mi.actualDate DESC
             """)
-    List<MenuItem> getBetweenDatesByRestaurantId(LocalDate startDate, LocalDate endDate, int restaurantId);
+    List<MenuItem> getBetweenDatesByRestaurantId(int restaurantId, LocalDate startDate, LocalDate endDate);
 
     default MenuItem checkBelong(int restaurantId, int id) {
         return getByRestaurantIdAndMenuItem(restaurantId, id).orElseThrow(
