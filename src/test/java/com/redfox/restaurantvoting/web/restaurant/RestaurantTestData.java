@@ -14,6 +14,8 @@ public class RestaurantTestData {
     public static final Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "menuItems");
     public static final Matcher<RestaurantWithMenu> RESTAURANT_MATCHER_WITH_MENU = MatcherFactory.usingIgnoringFieldsComparator(RestaurantWithMenu.class, "dishRefs.restaurant");
 
+    public static final Matcher<MenuItem> MENUITEM_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(MenuItem.class, "restaurant", "dishRef");
+
     public static final int YAKITORIYA_ID = 1;
     public static final int DODO_ID = 2;
     public static final int MAC_ID = 3;
@@ -82,5 +84,21 @@ public class RestaurantTestData {
 
     public static Restaurant getUpdated() {
         return new Restaurant(YAKITORIYA_ID, "Якитория", "Верейская улица, 17");
+    }
+
+    public static MenuItem getNewMenuItem() {
+        return new MenuItem(null, LocalDate.now(), yakitoriya, yakitoriya_c);
+    }
+
+    public static MenuItem getUpdatedMenuItem() {
+        return new MenuItem(yakitoriya_1.id(), LocalDate.now(), getUpdated(), getUpdatedDish());
+    }
+
+    public static DishRef getNewDish() {
+        return new DishRef(null, "Новая Якитория-еда", 12000, yakitoriya);
+    }
+
+    public static DishRef getUpdatedDish() {
+        return new DishRef(yakitoriya_c.id(), "Калифорния-2", 17500, yakitoriya);
     }
 }
