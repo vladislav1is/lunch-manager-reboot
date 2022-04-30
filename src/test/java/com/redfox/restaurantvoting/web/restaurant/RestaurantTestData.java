@@ -15,6 +15,7 @@ public class RestaurantTestData {
     public static final Matcher<RestaurantWithMenu> RESTAURANT_MATCHER_WITH_MENU = MatcherFactory.usingIgnoringFieldsComparator(RestaurantWithMenu.class, "dishRefs.restaurant");
 
     public static final Matcher<MenuItem> MENUITEM_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(MenuItem.class, "restaurant", "dishRef");
+    public static final Matcher<DishRef> DISH_REF_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(DishRef.class, "restaurant");
 
     public static final int YAKITORIYA_ID = 1;
     public static final int DODO_ID = 2;
