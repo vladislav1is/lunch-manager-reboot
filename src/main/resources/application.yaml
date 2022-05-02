@@ -24,7 +24,7 @@ spring:
 
   # https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
   cache:
-    cache-names: users,restaurants,allRestaurantsWithMenu,restaurantWithMenu
+    cache-names: users,restaurants,allEnabledRestaurants,allRestaurantsWithMenu,restaurantWithMenu
     # https://www.javadoc.io/static/com.github.ben-manes.caffeine/caffeine/2.1.0/com/github/benmanes/caffeine/cache/Caffeine.html
     caffeine.spec: maximumSize=5000,expireAfterAccess=600s
 

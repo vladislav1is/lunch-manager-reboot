@@ -27,7 +27,7 @@ public class RestaurantController {
     private final RestaurantMapper restaurantMapper;
 
     @GetMapping
-    @Cacheable("restaurants")
+    @Cacheable("allEnabledRestaurants")
     public List<Restaurant> getAllEnabled() {
         log.info("getAllEnabled");
         return repository.getAllEnabled();

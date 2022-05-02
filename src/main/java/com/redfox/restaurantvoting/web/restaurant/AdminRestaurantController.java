@@ -38,7 +38,7 @@ public class AdminRestaurantController {
     }
 
     @GetMapping
-    @Cacheable(value = "restaurants")
+    @Cacheable("restaurants")
     public List<Restaurant> getAll() {
         log.info("getAll");
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name"));
@@ -48,6 +48,7 @@ public class AdminRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Caching(evict = {
             @CacheEvict(value = "restaurants", allEntries = true),
+            @CacheEvict(value = "allEnabledRestaurants", allEntries = true),
             @CacheEvict(value = "allRestaurantsWithMenu", allEntries = true),
             @CacheEvict(value = "restaurantWithMenu", key = "#id")
     })
@@ -57,7 +58,10 @@ public class AdminRestaurantController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CacheEvict(value = "restaurants", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", allEntries = true),
+            @CacheEvict(value = "allEnabledRestaurants", allEntries = true),
+    })
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
@@ -72,6 +76,7 @@ public class AdminRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Caching(evict = {
             @CacheEvict(value = "restaurants", allEntries = true),
+            @CacheEvict(value = "allEnabledRestaurants", allEntries = true),
             @CacheEvict(value = "allRestaurantsWithMenu", allEntries = true),
             @CacheEvict(value = "restaurantWithMenu", key = "#id")
     })
@@ -86,6 +91,7 @@ public class AdminRestaurantController {
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "restaurants", allEntries = true),
+            @CacheEvict(value = "allEnabledRestaurants", allEntries = true),
             @CacheEvict(value = "allRestaurantsWithMenu", allEntries = true),
             @CacheEvict(value = "restaurantWithMenu", key = "#id")
     })
