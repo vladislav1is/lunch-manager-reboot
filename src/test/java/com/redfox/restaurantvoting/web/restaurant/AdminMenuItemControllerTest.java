@@ -11,11 +11,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 import static com.redfox.restaurantvoting.web.restaurant.RestaurantTestData.*;
 import static com.redfox.restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
 import static com.redfox.restaurantvoting.web.user.UserTestData.USER_MAIL;
+import static java.time.LocalDate.now;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -82,7 +84,7 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void getByRestaurantAndDate() throws Exception {
         perform(MockMvcRequestBuilders.get(getUrl(YAKITORIYA_ID) + "/by-date")
-                .param("date", "2022-04-30"))
+                .param("date", now().format(DateTimeFormatter.ISO_DATE)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MENUITEM_MATCHER.contentJson(yakitoriya_1, yakitoriya_2));
@@ -92,8 +94,8 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void getBetweenDatesByRestaurant() throws Exception {
         perform(MockMvcRequestBuilders.get(getUrl(YAKITORIYA_ID) + "filter")
-                .param("startDate", "2022-04-30")
-                .param("endDate", "2022-04-30"))
+                .param("startDate", now().format(DateTimeFormatter.ISO_DATE))
+                .param("endDate", now().format(DateTimeFormatter.ISO_DATE)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MENUITEM_MATCHER.contentJson(yakitoriya_1, yakitoriya_2));
