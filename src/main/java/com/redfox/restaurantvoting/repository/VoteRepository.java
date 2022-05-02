@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface VoteRepository extends BaseRepository<Vote> {
@@ -17,7 +18,7 @@ public interface VoteRepository extends BaseRepository<Vote> {
     void deleteByRestaurantId(int restaurantId);
 
     @Query("SELECT v FROM Vote v WHERE v.actualDate=:date AND v.user.id=:userId")
-    Vote getByDateAndUserId(LocalDate date, int userId);
+    Optional<Vote> getByDateAndUserId(LocalDate date, int userId);
 
     @Query("SELECT v FROM Vote v WHERE v.user.id=:userId")
     List<Vote> getAllByUserId(int userId);
