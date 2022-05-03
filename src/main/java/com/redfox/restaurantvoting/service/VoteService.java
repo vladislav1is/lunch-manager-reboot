@@ -6,6 +6,7 @@ import com.redfox.restaurantvoting.model.Vote;
 import com.redfox.restaurantvoting.repository.RestaurantRepository;
 import com.redfox.restaurantvoting.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,7 +19,9 @@ import java.util.Optional;
 public class VoteService {
     private final VoteRepository repository;
     private final RestaurantRepository restaurantRepository;
-    private static final LocalTime DEADLINE = LocalTime.of(11, 0);
+
+    @Setter
+    static LocalTime deadline = LocalTime.of(11, 0);
 
     @Transactional
     public Vote createToday(User user, int restaurantId) {
@@ -35,7 +38,7 @@ public class VoteService {
     @Transactional
     public void updateToday(User user, int restaurantId, boolean deleteVote) {
         LocalDateTime now = LocalDateTime.now();
-        if (now.toLocalTime().isAfter(DEADLINE)) {
+        if (now.toLocalTime().isAfter(deadline)) {
             throw new DataConflictException("Deadline for change vote has passed");
         }
         Optional<Vote> dbVote = repository.getByDateAndUserId(now.toLocalDate(), user.id());
