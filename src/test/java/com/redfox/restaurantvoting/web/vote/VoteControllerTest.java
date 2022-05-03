@@ -32,6 +32,8 @@ class VoteControllerTest extends AbstractControllerTest {
 
     @Autowired
     private VoteRepository voteRepository;
+    @Autowired
+    private VoteService voteService;
 
     @Test
     void getUnAuth() throws Exception {
@@ -83,7 +85,7 @@ class VoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void revoteTodayBeforeDeadline() throws Exception {
-        VoteService.setDeadline(LocalTime.MAX);
+        voteService.setDeadline(LocalTime.MAX);
         perform(MockMvcRequestBuilders.put(REST_URL)
                 .param("restaurantId", Integer.toString(YAKITORIYA_ID))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -94,7 +96,7 @@ class VoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void revoteTodayAfterDeadline() throws Exception {
-        VoteService.setDeadline(LocalTime.MIN);
+        voteService.setDeadline(LocalTime.MIN);
         perform(MockMvcRequestBuilders.put(REST_URL)
                 .param("restaurantId", Integer.toString(YAKITORIYA_ID))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -105,7 +107,7 @@ class VoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void deleteTodayBeforeDeadline() throws Exception {
-        VoteService.setDeadline(LocalTime.MAX);
+        voteService.setDeadline(LocalTime.MAX);
         perform(MockMvcRequestBuilders.delete(REST_URL))
                 .andExpect(status().isNoContent());
         assertFalse(voteRepository.getByDateAndUserId(LocalDate.now(), USER_ID).isPresent());
@@ -114,7 +116,7 @@ class VoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void deleteTodayAfterDeadline() throws Exception {
-        VoteService.setDeadline(LocalTime.MIN);
+        voteService.setDeadline(LocalTime.MIN);
         perform(MockMvcRequestBuilders.delete(REST_URL))
                 .andDo(print())
                 .andExpect(status().isConflict());

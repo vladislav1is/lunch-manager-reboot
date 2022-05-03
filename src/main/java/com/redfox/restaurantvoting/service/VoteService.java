@@ -7,6 +7,8 @@ import com.redfox.restaurantvoting.repository.RestaurantRepository;
 import com.redfox.restaurantvoting.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,7 +23,9 @@ public class VoteService {
     private final RestaurantRepository restaurantRepository;
 
     @Setter
-    static LocalTime deadline = LocalTime.of(11, 0);
+    @Value("${app.deadline}")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    LocalTime deadline;
 
     @Transactional
     public Vote createToday(User user, int restaurantId) {
