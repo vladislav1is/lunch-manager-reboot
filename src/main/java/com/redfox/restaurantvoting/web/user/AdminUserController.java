@@ -1,5 +1,7 @@
 package com.redfox.restaurantvoting.web.user;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -49,6 +51,7 @@ public class AdminUserController extends AbstractUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(View.UserWithoutRestaurants.class)
     @CacheEvict(allEntries = true)
     public ResponseEntity<User> createWithLocation(@RequestBody @Valid User user) {
         log.info("create {}", user);

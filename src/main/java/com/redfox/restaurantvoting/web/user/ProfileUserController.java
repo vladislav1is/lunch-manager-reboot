@@ -1,5 +1,7 @@
 package com.redfox.restaurantvoting.web.user;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.mapper.UserMapper;
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.to.UserTo;
@@ -35,6 +37,7 @@ public class ProfileUserController extends AbstractUserController {
     private final UserMapper userMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(View.UserWithoutRestaurants.class)
     public User get(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get {}", authUser);
         return authUser.getUser();
@@ -48,6 +51,7 @@ public class ProfileUserController extends AbstractUserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
+    @JsonView(View.UserWithoutRestaurants.class)
     @CacheEvict(allEntries = true)
     public ResponseEntity<User> register(@RequestBody @Valid UserTo userTo) {
         log.info("register {}", userTo);

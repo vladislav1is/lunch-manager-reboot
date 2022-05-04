@@ -1,5 +1,7 @@
 package com.redfox.restaurantvoting.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.HasId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -20,6 +22,7 @@ public abstract class BaseEntity implements Persistable<Integer>, HasId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY) // https://stackoverflow.com/a/28025008/548473
+    @JsonView(View.UserWithoutRestaurants.class)
     protected Integer id;
 
     //  doesn't work for hibernate lazy proxy

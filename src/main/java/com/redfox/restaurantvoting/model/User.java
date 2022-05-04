@@ -1,9 +1,12 @@
 package com.redfox.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.redfox.restaurantvoting.HasIdAndEmail;
+import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.mapper.Default;
 import com.redfox.restaurantvoting.util.validation.NoHtml;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -39,6 +42,7 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     @NotBlank
     @Size(max = 100)
     @NoHtml // https://stackoverflow.com/questions/17480809
+    @JsonView(View.UserWithoutRestaurants.class)
     private String email;
 
     @Column(name = "password", nullable = false)
@@ -46,14 +50,17 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     @Size(min = 5, max = 100)
     // https://stackoverflow.com/a/12505165/548473
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonView(View.UserWithoutRestaurants.class)
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
+    @JsonView(View.UserWithoutRestaurants.class)
     private boolean enabled;
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonView(View.UserWithoutRestaurants.class)
     private LocalDateTime registered = now().truncatedTo(ChronoUnit.MINUTES);
 
     @Enumerated(EnumType.STRING)
@@ -63,7 +70,18 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id") // https://stackoverflow.com/a/62848296/548473
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonView(View.UserWithoutRestaurants.class)
     private Set<Role> roles;
+
+    @CollectionTable(name = "admin_restaurant",
+            joinColumns = @JoinColumn(name = "admin_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"admin_id", "restaurant_id"}, name = "admin_restaurant_uk"))
+    @Column(name = "restaurant_id")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Schema(hidden = true)
+    private Set<Integer> adminRestaurants = Set.of();
 
     public User(Integer id, String name, String email, String password, Role role, Role... roles) {
         this(id, name, email, password, true, now().truncatedTo(ChronoUnit.MINUTES), EnumSet.of(role, roles));

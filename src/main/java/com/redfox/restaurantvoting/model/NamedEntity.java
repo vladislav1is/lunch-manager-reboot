@@ -1,5 +1,7 @@
 package com.redfox.restaurantvoting.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,6 +22,7 @@ public abstract class NamedEntity extends BaseEntity {
     @NotBlank
     @Size(min = 2, max = 100)
     @NoHtml
+    @JsonView(View.UserWithoutRestaurants.class)
     protected String name;
 
     protected NamedEntity(Integer id, String name) {

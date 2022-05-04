@@ -57,7 +57,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(USER_MATCHER.contentJson(admin, user));
+                .andExpect(USER_MATCHER.contentJson(admin, r_admin, user));
     }
 
     @Test

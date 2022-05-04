@@ -3,6 +3,7 @@ package com.redfox.restaurantvoting.web.restaurant;
 import com.redfox.restaurantvoting.model.MenuItem;
 import com.redfox.restaurantvoting.repository.MenuItemRepository;
 import com.redfox.restaurantvoting.util.JsonUtil;
+import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import com.redfox.restaurantvoting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 import static com.redfox.restaurantvoting.web.restaurant.RestaurantTestData.*;
-import static com.redfox.restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
-import static com.redfox.restaurantvoting.web.user.UserTestData.USER_MAIL;
+import static com.redfox.restaurantvoting.web.user.UserTestData.*;
 import static java.time.LocalDate.now;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AdminMenuItemControllerTest extends AbstractControllerTest {
-    private static final String REST_URL = AdminRestaurantController.REST_URL + '/';
+    private static final String REST_URL = AdminRestaurantsUtil.REST_URL + '/';
 
     @Autowired
     private MenuItemRepository menuItemRepository;
@@ -47,6 +47,13 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER_MAIL)
     void getForbidden() throws Exception {
         perform(MockMvcRequestBuilders.get(getUrl(YAKITORIYA_ID)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails(value = R_ADMIN_MAIL)
+    void getNotBelong() throws Exception {
+        perform(MockMvcRequestBuilders.get(getUrl(MAC_ID)))
                 .andExpect(status().isForbidden());
     }
 

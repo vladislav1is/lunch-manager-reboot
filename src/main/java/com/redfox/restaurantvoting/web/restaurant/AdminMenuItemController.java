@@ -3,6 +3,7 @@ package com.redfox.restaurantvoting.web.restaurant;
 import com.redfox.restaurantvoting.model.MenuItem;
 import com.redfox.restaurantvoting.repository.MenuItemRepository;
 import com.redfox.restaurantvoting.service.MenuItemService;
+import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,7 +30,7 @@ import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 @AllArgsConstructor
 @Slf4j
 public class AdminMenuItemController {
-    static final String REST_URL = "/api/admin/restaurants/{restaurantId}/menu-items";
+    static final String REST_URL =  AdminRestaurantsUtil.REST_URL + "/{restaurantId}/menu-items";
 
     private final MenuItemRepository repository;
     private final MenuItemService service;
