@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public UserDetailsService userDetailsService() {
+    protected UserDetailsService userDetailsService() {
         return email -> {
             log.debug("Authenticating '{}'", email);
             Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);

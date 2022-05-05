@@ -11,10 +11,11 @@ import org.springframework.validation.Errors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.redfox.restaurantvoting.web.GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL;
+
 @Component
 @AllArgsConstructor
 public class UniqueMailValidator implements org.springframework.validation.Validator {
-    public static final String EXCEPTION_DUPLICATE_EMAIL = "User with this email already exists";
 
     private final UserRepository repository;
     private final HttpServletRequest request;
@@ -39,7 +40,8 @@ public class UniqueMailValidator implements org.springframework.validation.Valid
                             // Workaround for update with user.id=null in request body
                             // ValidationUtil.assureIdConsistent called after this validation
                             String requestURI = request.getRequestURI();
-                            if (requestURI.endsWith("/" + dbId) || (dbId == SecurityUtil.authId() && requestURI.contains("/profile"))) return;
+                            if (requestURI.endsWith("/" + dbId) || (dbId == SecurityUtil.authId() && requestURI.contains("/profile")))
+                                return;
                         }
                         errors.rejectValue("email", "", EXCEPTION_DUPLICATE_EMAIL);
                     });

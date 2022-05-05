@@ -18,14 +18,16 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = "user")
 public class Vote extends BaseEntity {
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
     @JsonIgnore
     private User user;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private int userId;
 
     @Column(name = "actual_date", nullable = false)
     @NotNull
@@ -41,6 +43,7 @@ public class Vote extends BaseEntity {
     public Vote(Integer id, @NotNull User user, @NotNull LocalDate actualDate, @NotNull LocalTime actualTime, int restaurantId) {
         super(id);
         this.user = user;
+        this.userId = user.id();
         this.actualDate = actualDate;
         this.actualTime = actualTime;
         this.restaurantId = restaurantId;

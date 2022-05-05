@@ -2,7 +2,6 @@ package com.redfox.restaurantvoting.repository;
 
 import com.redfox.restaurantvoting.error.DataConflictException;
 import com.redfox.restaurantvoting.model.DishRef;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,11 +10,6 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface DishRefRepository extends BaseRepository<DishRef> {
-
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM DishRef d WHERE d.restaurant.id=:id")
-    void deleteByRestaurantId(int id);
 
     @Query("SELECT d FROM DishRef d WHERE d.id=:id AND d.restaurant.id=:restaurantId")
     Optional<DishRef> get(int restaurantId, int id);

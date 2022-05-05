@@ -29,6 +29,8 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 @AllArgsConstructor
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "User with this email already exists";
+
     private final ErrorAttributes errorAttributes;
 
     @ExceptionHandler(AppException.class)
@@ -51,8 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @NonNull
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(
-            @NonNull Exception ex, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(@NonNull Exception ex, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
         log.error("Exception", ex);
         super.handleExceptionInternal(ex, body, headers, status, request);
         return createResponseEntity(request, ErrorAttributeOptions.of(), Validations.getRootCause(ex).getMessage(), status);
@@ -60,16 +61,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @NonNull
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
         return handleBindingErrors(ex.getBindingResult(), request);
     }
 
     @NonNull
     @Override
-    protected ResponseEntity<Object> handleBindException(
-            BindException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleBindException(BindException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
         return handleBindingErrors(ex.getBindingResult(), request);
     }
 
