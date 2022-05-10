@@ -1,0 +1,46 @@
+body {
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th {
+    text-align: center;
+    font-weight: bold;
+    padding: 5px;
+    background: #efefef;
+    border: 1px solid #dddddd;
+}
+
+table td {
+    text-align: left;
+    border: 1px solid #dddddd;
+    padding: 5px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.warning {
+    color: red;
+    font-weight: bold;
+}
+
+.menu th {
+    border-top: none;
+    background: none;
+}
+
+.menu th:first-child {
+    border-left: 1px solid #bbb;
+}
+
+.login td {
+    border: none;
+    text-align: left;
+}

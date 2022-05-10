@@ -18,10 +18,12 @@
 
     <properties>
         <java.version>17</java.version>
-        <springdoc.version>1.6.2</springdoc.version>
-        <mapstruct.version>1.4.2.Final</mapstruct.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- MapStruct -->
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
+        <!-- Swagger -->
+        <springdoc.version>1.6.2</springdoc.version>
     </properties>
     <dependencies>
         <dependency>
@@ -56,13 +58,6 @@
             <version>${mapstruct.version}</version>
         </dependency>
 
-        <!-- XSS Validation -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.14.3</version>
-        </dependency>
-
         <!-- ORM -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -82,6 +77,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <!-- XSS Validation -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.14.3</version>
+        </dependency>
         <!-- Cache -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,6 +91,16 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <!-- Web -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
         </dependency>
 
         <!-- Swagger -->

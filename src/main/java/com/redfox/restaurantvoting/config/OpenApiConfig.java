@@ -6,9 +6,17 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.models.media.Schema;
 import org.springdoc.core.GroupedOpenApi;
+import org.springdoc.core.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import static com.redfox.restaurantvoting.util.DateTimeUtil.DATE_TIME_FORMATTER;
+import static com.redfox.restaurantvoting.util.DateTimeUtil.TIME_FORMATTER;
 
 @Configuration
 @SecurityScheme(
@@ -31,6 +39,15 @@ import org.springframework.context.annotation.Configuration;
         security = @SecurityRequirement(name = "basicAuth")
 )
 public class OpenApiConfig {
+    // https://ru.stackoverflow.com/a/1276885/209226
+    static {
+        var timeSchema = new Schema<LocalTime>();
+        timeSchema.example(LocalTime.now().format(TIME_FORMATTER));
+        SpringDocUtils.getConfig().replaceWithSchema(LocalTime.class, timeSchema);
+        var dateTimeSchema = new Schema<LocalDateTime>();
+        dateTimeSchema.example(LocalDateTime.now().format(DATE_TIME_FORMATTER));
+        SpringDocUtils.getConfig().replaceWithSchema(LocalDateTime.class, dateTimeSchema);
+    }
 
     @Bean
     public GroupedOpenApi api() {

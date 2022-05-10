@@ -1,10 +1,10 @@
 package com.redfox.restaurantvoting.config;
 
-import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
-import com.redfox.restaurantvoting.web.AuthUser;
 import com.redfox.restaurantvoting.model.Role;
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.UserRepository;
+import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
+import com.redfox.restaurantvoting.web.AuthUser;
 import com.redfox.restaurantvoting.web.SecurityUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,7 +30,11 @@ import java.util.Optional;
 
 import static com.redfox.restaurantvoting.util.Users.PASSWORD_ENCODER;
 
-@EnableWebSecurity
+@EnableWebSecurity()
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 @Slf4j
 @AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -56,8 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService())
-                .passwordEncoder(PASSWORD_ENCODER);
+        auth.userDetailsService(userDetailsService()).passwordEncoder(PASSWORD_ENCODER);
     }
 
     @Bean
@@ -77,13 +80,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/restaurants").permitAll()
+                .antMatchers("/resources/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/v3/api-docs/**").permitAll()
                 .antMatchers("/api/restaurants/**").permitAll()
                 .antMatchers(AdminRestaurantsUtil.REST_URL + "/**").hasAnyRole(Role.R_ADMIN.name(), Role.ADMIN.name())
                 .antMatchers(HttpMethod.POST, "/api/profile").anonymous()
                 .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
-                .antMatchers("/api/**").authenticated()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/restaurants", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+                .and()
+                .logout()
+                .logoutSuccessUrl("/login?logout=true")
+                .deleteCookies("JSESSIONID")
+                .permitAll()
                 .and().httpBasic()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();
     }
 }

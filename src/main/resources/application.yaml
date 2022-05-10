@@ -40,9 +40,11 @@ logging:
     org.springframework.cache: TRACE
     liquibase: DEBUG
 
-server.servlet:
-  context-path: /restaurant-voting
-  encoding:
-    charset: UTF-8 # Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly
-    enabled: true  # Enable http encoding support
-    force: true
+
+server:
+  servlet:
+    context-path: /restaurant-voting
+    encoding:
+      charset: UTF-8 # Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly
+      enabled: true  # Enable http encoding support
+      force: true
