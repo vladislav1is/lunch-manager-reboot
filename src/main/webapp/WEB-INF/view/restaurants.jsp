@@ -1,33 +1,35 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 <html>
 <head>
+    <title><spring:message code="restaurant.title"/></title>
     <jsp:include page="fragments/metadata.jsp"/>
-    <title><fmt:message key="restaurant.title"/></title>
 </head>
 <body>
-<section>
-    <h2><fmt:message key="restaurant.title"/></h2>
-    <jsp:include page="fragments/menu.jsp"/>
-    <br>
-    <table>
-        <thead>
-        <tr>
-            <th><fmt:message key="restaurant.name"/></th>
-            <th><fmt:message key="restaurant.address"/></th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="restaurant" items="${restaurants}" varStatus="status">
-            <c:set var="id" value="${restaurant.id}"/>
+<jsp:include page="fragments/bodyHeader.jsp"/>
+<div class="jumbotron pt-4">
+    <div class="container">
+        <h3 class="text-center"><spring:message code="restaurant.title"/></h3>
+        <table class="table table-striped mt-3">
+            <thead>
             <tr>
-                <td>${restaurant.name}</td>
-                <td>${restaurant.address}</td>
+                <th><spring:message code="restaurant.name"/></th>
+                <th><spring:message code="restaurant.address"/></th>
             </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-</section>
+            </thead>
+            <tbody>
+            <c:forEach var="restaurant" items="${restaurants}">
+                <tr>
+                    <td>${restaurant.name}</td>
+                    <td>${restaurant.address}</td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</div>
+<jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>
