@@ -30,7 +30,7 @@ import static com.redfox.restaurantvoting.util.DateTimeUtil.TIME_FORMATTER;
                 version = "1.0",
                 description = """
                         Graduation project <a href='https://github.com/vladislav1is/restaurant-voting'>Lunch Manager</a>
-                        <p><b>Тестовые креденшелы:</b><br>
+                        <p><b>Test credentials:</b><br>
                         - user@yandex.ru / password<br>
                         - admin@gmail.com / admin</p>
                         """,

@@ -1,20 +1,21 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <html>
 <head>
     <jsp:include page="fragments/metadata.jsp"/>
-    <title>Restaurants</title>
+    <title><fmt:message key="restaurant.title"/></title>
 </head>
 <body>
 <section>
-    <h2>Restaurants</h2>
+    <h2><fmt:message key="restaurant.title"/></h2>
     <jsp:include page="fragments/menu.jsp"/>
     <br>
     <table>
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Address</th>
+            <th><fmt:message key="restaurant.name"/></th>
+            <th><fmt:message key="restaurant.address"/></th>
         </tr>
         </thead>
         <tbody>
