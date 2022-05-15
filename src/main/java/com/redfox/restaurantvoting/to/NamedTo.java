@@ -1,13 +1,14 @@
 package com.redfox.restaurantvoting.to;
 
 import com.redfox.restaurantvoting.util.validation.NoHtml;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = true)
 public class NamedTo extends BaseTo {
     @NotBlank

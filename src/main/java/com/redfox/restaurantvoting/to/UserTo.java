@@ -2,15 +2,15 @@ package com.redfox.restaurantvoting.to;
 
 import com.redfox.restaurantvoting.HasIdAndEmail;
 import com.redfox.restaurantvoting.util.validation.NoHtml;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.Value;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Value
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class UserTo extends NamedTo implements HasIdAndEmail {
@@ -18,11 +18,11 @@ public class UserTo extends NamedTo implements HasIdAndEmail {
     @NotBlank
     @Size(max = 100)
     @NoHtml // https://stackoverflow.com/questions/17480809
-    String email;
+    private String email;
 
     @NotBlank
     @Size(min = 5, max = 32)
-    String password;
+    private String password;
 
     public UserTo(Integer id, String name, String email, String password) {
         super(id, name);
