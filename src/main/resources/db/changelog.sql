@@ -170,6 +170,11 @@ create table ADMIN_RESTAURANT
     constraint ADMIN_RESTAURANT_RESTAURANT_FK foreign key (RESTAURANT_ID) references RESTAURANT (ID) on delete cascade
 );
 
-INSERT INTO USERS (name, email, password) VALUES ('Restaurants Admin', 'r_admin@gmail.com', '{noop}radmin');
-INSERT INTO USER_ROLES (role, user_id) VALUES ('R_ADMIN', 3);
-INSERT INTO ADMIN_RESTAURANT (ADMIN_ID, RESTAURANT_ID) VALUES (3, 2),(3, 4);
+INSERT INTO USERS (name, email, password)
+VALUES ('Restaurants Admin', 'r_admin@gmail.com', '{noop}radmin');
+INSERT INTO USER_ROLES (role, user_id)
+VALUES ('R_ADMIN', 3),
+       ('USER', 3);
+INSERT INTO ADMIN_RESTAURANT (ADMIN_ID, RESTAURANT_ID)
+VALUES (3, 2),
+       (3, 4);

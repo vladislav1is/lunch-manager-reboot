@@ -8,6 +8,7 @@ import com.redfox.restaurantvoting.web.MatcherFactory.Matcher;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Set;
 
 import static com.redfox.restaurantvoting.web.restaurant.RestaurantTestData.*;
@@ -27,8 +28,8 @@ public class UserTestData {
     public static final String MAIL_NOT_FOUND = "notfound@gmail.com";
 
     public static final User user = new User(USER_ID, "User", USER_MAIL, "password", Role.USER);
-    public static final User admin = new User(ADMIN_ID, "Admin", ADMIN_MAIL, "admin", Role.ADMIN, Role.USER);
-    public static final User r_admin = new User(R_ADMIN_ID, "Restaurants Admin", R_ADMIN_MAIL, "radmin", Role.R_ADMIN);
+    public static final User admin = new User(ADMIN_ID, "Admin", ADMIN_MAIL, "admin", Role.USER, Role.ADMIN);
+    public static final User r_admin = new User(R_ADMIN_ID, "Restaurants Admin", R_ADMIN_MAIL, "radmin", Role.USER, Role.R_ADMIN);
 
     static {
         r_admin.setAdminRestaurants(Set.of(DODO_ID, TEREMOK_ID));
@@ -39,7 +40,7 @@ public class UserTestData {
     }
 
     public static User getUpdated() {
-        return new User(USER_ID, "Updated", USER_MAIL, "newPass", false, now().truncatedTo(ChronoUnit.MINUTES), Collections.singleton(Role.ADMIN));
+        return new User(USER_ID, "Updated", USER_MAIL, "newPass", false, now().truncatedTo(ChronoUnit.MINUTES), EnumSet.of(Role.USER, Role.ADMIN));
     }
 
     public static String jsonWithPassword(User user, String passw) {
