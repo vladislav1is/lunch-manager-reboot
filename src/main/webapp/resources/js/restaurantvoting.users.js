@@ -45,6 +45,10 @@ $(function () {
                     "data": "registered"
                 },
                 {
+                    "defaultContent": "Edit",
+                    "orderable": false
+                },
+                {
                     "defaultContent": "Delete",
                     "orderable": false
                 }

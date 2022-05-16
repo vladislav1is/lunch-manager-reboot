@@ -8,10 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @Hidden
@@ -20,8 +18,15 @@ import java.util.List;
 public class AdminUserUIController extends AbstractUserController {
     static final String REST_URL = "/admin/users";
 
+    @GetMapping("/{id}")
+    @JsonView(View.UserWithoutRestaurants.class)
+    public ResponseEntity<User> get(@PathVariable int id) {
+        return ResponseEntity.of(super.findById(id));
+    }
+
     @Override
     @GetMapping
+    @JsonView(View.UserWithoutRestaurants.class)
     public List<User> getAll() {
         return super.getAll();
     }
@@ -33,14 +38,13 @@ public class AdminUserUIController extends AbstractUserController {
         super.delete(id);
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView(View.UserWithoutRestaurants.class)
-    public ResponseEntity<User> createWithLocation(@Valid User user) {
-        User created = super.create(user);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/admin/users" + "/{id}")
-                .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+    @PostMapping
+    public void createOrUpdate(@Valid User user) {
+        if (user.isNew()) {
+            super.create(user);
+        } else {
+            super.update(user, user.id());
+        }
     }
 
     @Override

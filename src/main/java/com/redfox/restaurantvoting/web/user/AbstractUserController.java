@@ -14,7 +14,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
 import java.util.List;
+import java.util.Optional;
 
+import static com.redfox.restaurantvoting.util.validation.Validations.assureIdConsistent;
 import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 
 @Slf4j
@@ -30,6 +32,11 @@ public abstract class AbstractUserController {
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(emailValidator);
+    }
+
+    public Optional<User> findById(int id) {
+        log.info("get {}", id);
+        return repository.getExisted(id);
     }
 
     @CacheEvict(allEntries = true)
@@ -53,6 +60,13 @@ public abstract class AbstractUserController {
 
     protected User prepareAndSave(User user) {
         return repository.save(Users.prepareToSave(user));
+    }
+
+    @CacheEvict(allEntries = true)
+    public void update(User user, int id) {
+        log.info("update {} with id={}", user, id);
+        assureIdConsistent(user, id);
+        prepareAndSave(user);
     }
 
     @Transactional

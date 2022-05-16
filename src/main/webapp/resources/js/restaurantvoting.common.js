@@ -18,6 +18,29 @@ function add() {
     $("#editRow").modal();
 }
 
+function updateRow(id) {
+    form.find(":input").val("");
+    $.get(ctx.ajaxUrl + id, function (data) {
+        $.each(data, function (key, value) {
+            if (Object.is("roles", key)) {
+                switch (value[1]) {
+                    case "R_ADMIN":
+                        form.find('#role').val("R_ADMIN");
+                        break;
+                    case "ADMIN":
+                        form.find('#role').val("ADMIN");
+                        break;
+                    default:
+                        form.find('#role').val("USER");
+                }
+            } else {
+                form.find("input[name='" + key + "']").val(value);
+            }
+        });
+        $('#editRow').modal();
+    });
+}
+
 function deleteRow(id) {
     if (confirm('Are you sure?')) {
         $.ajax({

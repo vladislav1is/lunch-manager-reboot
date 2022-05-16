@@ -33,6 +33,7 @@
                 <th><spring:message code="user.active"/></th>
                 <th><spring:message code="user.registered"/></th>
                 <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -44,6 +45,7 @@
                     <td><input type="checkbox" <c:if test="${user.enabled}">checked</c:if>
                                onclick="enable($(this), ${user.id})"/></td>
                     <td>${fn:format(user.registered)}</td>
+                    <td><a onclick=updateRow(${user.id})><span class="fa text-dark fa-pencil"></span></a></td>
                     <td><a onclick="deleteRow(${user.id})"><span class="fa text-dark fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
@@ -61,6 +63,7 @@
             <div class="modal-body">
                 <form id="detailsForm">
                     <input type="hidden" id="id" name="id">
+                    <input type="hidden" id="enabled" name="enabled">
                     <div class="form-group">
                         <label for="name" class="col-form-label"><spring:message code="user.name"/></label>
                         <input type="text" class="form-control" id="name" name="name"

@@ -70,6 +70,7 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id") // https://stackoverflow.com/a/62848296/548473
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy(value = "role DESC")
     @JsonView(View.UserWithoutRestaurants.class)
     private Set<Role> roles;
 
