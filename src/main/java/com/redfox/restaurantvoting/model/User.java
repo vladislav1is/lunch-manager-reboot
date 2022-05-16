@@ -55,7 +55,7 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
     @JsonView(View.UserWithoutRestaurants.class)
-    private boolean enabled;
+    private boolean enabled = true;
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
@@ -107,6 +107,14 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+    }
+
+    public void setRole(Role role) {
+        switch (role) {
+            case R_ADMIN -> this.roles = EnumSet.of(Role.USER, Role.R_ADMIN);
+            case ADMIN -> this.roles = EnumSet.of(Role.USER, Role.ADMIN);
+            default -> this.roles = EnumSet.of(Role.USER);
+        }
     }
 
     public boolean hasRole(Role role) {

@@ -71,13 +71,10 @@ public class AdminUserController extends AbstractUserController {
         return ResponseEntity.of(repository.getExistedEmail(email));
     }
 
+    @Override
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Transactional
-    @CacheEvict(allEntries = true)
     public void enable(@PathVariable int id, @RequestParam boolean enabled) {
-        log.info(enabled ? "enable {}" : "disable {}", id);
-        User user = repository.getById(id);
-        user.setEnabled(enabled);
+        super.enable(id, enabled);
     }
 }

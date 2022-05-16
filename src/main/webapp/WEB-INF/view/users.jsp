@@ -8,8 +8,10 @@
     <jsp:include page="fragments/metadata.jsp"/>
     <title><spring:message code="user.title"/></title>
     <link rel="stylesheet" href="webjars/datatables/1.10.25/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="webjars/noty/3.1.4/lib/noty.css"/>
     <script src="webjars/datatables/1.10.25/js/jquery.dataTables.min.js" defer></script>
     <script src="webjars/datatables/1.10.25/js/dataTables.bootstrap4.min.js" defer></script>
+    <script src="webjars/noty/3.1.4/lib/noty.min.js" defer></script>
 </head>
 <body>
 <script src="resources/js/restaurantvoting.common.js" defer></script>
@@ -35,13 +37,14 @@
             </thead>
             <tbody>
             <c:forEach items="${users}" var="user">
-                <tr>
+                <tr data-user-enabled="${user.enabled}">
                     <td><c:out value="${user.name}"/></td>
                     <td><a href="mailto:${user.email}">${user.email}</a></td>
                     <td>${user.roles}</td>
-                    <td><input type="checkbox" <c:if test="${user.enabled}">checked</c:if> id="${user.id}"/></td>
+                    <td><input type="checkbox" <c:if test="${user.enabled}">checked</c:if>
+                               onclick="enable($(this), ${user.id})"/></td>
                     <td>${fn:format(user.registered)}</td>
-                    <td><a class="delete" id="${user.id}"><span class="fa text-dark fa-remove"></span></a></td>
+                    <td><a onclick="deleteRow(${user.id})"><span class="fa text-dark fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -53,7 +56,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><spring:message code="user.add"/></h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" onclick="closeNoty()">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="detailsForm">
@@ -84,7 +87,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeNoty()">
                     <span class="fa fa-close"></span>
                     <spring:message code="common.cancel"/>
                 </button>

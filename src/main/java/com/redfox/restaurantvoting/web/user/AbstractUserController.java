@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
@@ -52,5 +53,13 @@ public abstract class AbstractUserController {
 
     protected User prepareAndSave(User user) {
         return repository.save(Users.prepareToSave(user));
+    }
+
+    @Transactional
+    @CacheEvict(allEntries = true)
+    public void enable(int id, boolean enabled) {
+        log.info(enabled ? "enable {}" : "disable {}", id);
+        User user = repository.getById(id);
+        user.setEnabled(enabled);
     }
 }
