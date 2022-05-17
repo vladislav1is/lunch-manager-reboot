@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.model.User;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,8 @@ public class AdminUserUIController extends AbstractUserController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(cacheNames = "users", allEntries = true)
     public void createOrUpdate(@Valid User user) {
         if (user.isNew()) {
             super.create(user);

@@ -51,7 +51,6 @@ public abstract class AbstractUserController {
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name", "email"));
     }
 
-    @CacheEvict(allEntries = true)
     public User create(User user) {
         log.info("create {}", user);
         checkNew(user);
@@ -62,7 +61,6 @@ public abstract class AbstractUserController {
         return repository.save(Users.prepareToSave(user));
     }
 
-    @CacheEvict(allEntries = true)
     public void update(User user, int id) {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
