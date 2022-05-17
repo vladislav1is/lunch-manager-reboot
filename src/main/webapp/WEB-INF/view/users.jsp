@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://restaurantvoting.redfox.com/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
@@ -36,20 +35,6 @@
                 <th></th>
             </tr>
             </thead>
-            <tbody>
-            <c:forEach items="${users}" var="user">
-                <tr data-user-enabled="${user.enabled}">
-                    <td><c:out value="${user.name}"/></td>
-                    <td><a href="mailto:${user.email}">${user.email}</a></td>
-                    <td>${user.roles}</td>
-                    <td><input type="checkbox" <c:if test="${user.enabled}">checked</c:if>
-                               onclick="enable($(this), ${user.id})"/></td>
-                    <td>${fn:format(user.registered)}</td>
-                    <td><a onclick=updateRow(${user.id})><span class="fa text-dark fa-pencil"></span></a></td>
-                    <td><a onclick="deleteRow(${user.id})"><span class="fa text-dark fa-remove"></span></a></td>
-                </tr>
-            </c:forEach>
-            </tbody>
         </table>
     </div>
 </div>

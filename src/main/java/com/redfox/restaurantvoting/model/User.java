@@ -1,10 +1,13 @@
 package com.redfox.restaurantvoting.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.redfox.restaurantvoting.HasIdAndEmail;
 import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.mapper.Default;
+import com.redfox.restaurantvoting.util.DateTimeUtil;
 import com.redfox.restaurantvoting.util.validation.NoHtml;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -61,6 +64,7 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonView(View.UserWithoutRestaurants.class)
+    @JsonFormat(pattern= DateTimeUtil.DATE_TIME_PATTERN)
     private LocalDateTime registered = now().truncatedTo(ChronoUnit.MINUTES);
 
     @Enumerated(EnumType.STRING)
@@ -110,6 +114,7 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }
 
+    @JsonIgnore
     public void setRole(Role role) {
         switch (role) {
             case R_ADMIN -> this.roles = EnumSet.of(Role.USER, Role.R_ADMIN);
