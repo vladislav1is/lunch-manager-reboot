@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +17,18 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
-@RestControllerAdvice
+@RestControllerAdvice(annotations = RestController.class)
+@Order(Ordered.HIGHEST_PRECEDENCE + 5)
 @AllArgsConstructor
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -36,19 +39,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> appException(WebRequest request, AppException ex) {
         log.error("ApplicationException: {}", ex.getMessage());
-        return createResponseEntity(request, ex.getOptions(), null, ex.getStatus());
+        return createResponseEntity(request, ex.getOptions(), ex.getStatus());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> entityNotFoundException(WebRequest request, EntityNotFoundException ex) {
         log.error("EntityNotFoundException: {}", ex.getMessage());
-        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), null, HttpStatus.UNPROCESSABLE_ENTITY);
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(DataConflictException.class)
     public ResponseEntity<?> dataConflictException(WebRequest request, DataConflictException ex) {
         log.error("DataConflictException: {}", ex.getMessage());
-        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), null, HttpStatus.CONFLICT);
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT);
     }
 
     @NonNull
@@ -56,7 +59,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal(@NonNull Exception ex, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
         log.error("Exception", ex);
         super.handleExceptionInternal(ex, body, headers, status, request);
-        return createResponseEntity(request, ErrorAttributeOptions.of(), Validations.getRootCause(ex).getMessage(), status);
+        return createResponseEntity(request, ErrorAttributeOptions.of(), status, Validations.getRootCause(ex).getMessage());
     }
 
     @NonNull
@@ -72,17 +75,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> handleBindingErrors(BindingResult result, WebRequest request) {
-        String msg = result.getFieldErrors().stream()
+        String[] details = result.getFieldErrors().stream()
                 .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                .collect(Collectors.joining("\n"));
-        return createResponseEntity(request, ErrorAttributeOptions.defaults(), msg, HttpStatus.UNPROCESSABLE_ENTITY);
+                .toArray(String[]::new);
+
+        return createResponseEntity(request, ErrorAttributeOptions.defaults(), HttpStatus.UNPROCESSABLE_ENTITY, details);
     }
 
     @SuppressWarnings("unchecked")
-    private <T> ResponseEntity<T> createResponseEntity(WebRequest request, ErrorAttributeOptions options, String msg, HttpStatus status) {
+    private <T> ResponseEntity<T> createResponseEntity(WebRequest request, ErrorAttributeOptions options, HttpStatus status, String... details) {
         Map<String, Object> body = errorAttributes.getErrorAttributes(request, options);
-        if (msg != null) {
-            body.put("message", msg);
+        if (details.length != 0) {
+            body.put("details", details);
         }
         body.put("status", status.value());
         body.put("error", status.getReasonPhrase());

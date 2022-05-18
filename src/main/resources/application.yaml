@@ -34,6 +34,9 @@ spring:
   liquibase:
     changeLog: "classpath:db/changelog.sql"
 
+  mvc:
+    throw-exception-if-no-handler-found: true
+
 logging:
   level:
     root: WARN
