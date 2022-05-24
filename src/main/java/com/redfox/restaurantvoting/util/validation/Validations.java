@@ -1,11 +1,15 @@
 package com.redfox.restaurantvoting.util.validation;
 
 import com.redfox.restaurantvoting.HasId;
+import com.redfox.restaurantvoting.error.ErrorType;
 import com.redfox.restaurantvoting.error.IllegalRequestDataException;
 import com.redfox.restaurantvoting.error.NotFoundException;
 import lombok.experimental.UtilityClass;
+import org.slf4j.Logger;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
+
+import javax.servlet.http.HttpServletRequest;
 
 @UtilityClass
 public class Validations {
@@ -52,5 +56,15 @@ public class Validations {
 
     public static String getMessage(Throwable e) {
         return e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getClass().getName();
+    }
+
+    public static Throwable logAndGetRootCause(Logger log, HttpServletRequest request, Exception exception, boolean logStackTrace, ErrorType errorType) {
+        Throwable rootCause = Validations.getRootCause(exception);
+        if (logStackTrace) {
+            log.error(errorType + " at request " + request.getRequestURL(), rootCause);
+        } else {
+            log.warn("{} at request  {}: {}", errorType, request.getRequestURL(), rootCause.toString());
+        }
+        return rootCause;
     }
 }
