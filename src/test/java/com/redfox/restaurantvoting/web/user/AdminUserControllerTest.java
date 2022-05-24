@@ -189,7 +189,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .content(jsonWithPassword(updated, "password")))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(EXCEPTION_DUPLICATE_EMAIL)));
+                .andExpect(content().string(containsString(getMessage(EXCEPTION_DUPLICATE_EMAIL))));
     }
 
     @Test
@@ -202,7 +202,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .content(jsonWithPassword(expected, "newPass")))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(EXCEPTION_DUPLICATE_EMAIL)));
+                .andExpect(content().string(containsString(getMessage(EXCEPTION_DUPLICATE_EMAIL))));
     }
 
     @Test

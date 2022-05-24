@@ -11,7 +11,13 @@ function makeEditable(datatableOpts) {
                 },
                 "retrieve": true,
                 "paging": false,
-                "info": true
+                "info": true,
+                "language": {
+                    "search": i18n["common.search"],
+                    "info": i18n["common.info"],
+                    "infoEmpty": i18n["common.infoEmpty"],
+                    "emptyTable": i18n["common.emptyTable"]
+                }
             }
         ));
     form = $('#detailsForm');
@@ -31,12 +37,14 @@ function makeEditable(datatableOpts) {
 }
 
 function add() {
+    $("#modalTitle").html(i18n["addTitle"]);
     form.find(":input").val("");
     form.find('#role').val("USER");
     $("#editRow").modal();
 }
 
 function updateRow(id) {
+    $("#modalTitle").html(i18n["editTitle"]);
     form.find(":input").val("");
     $.get(ctx.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
@@ -60,13 +68,13 @@ function updateRow(id) {
 }
 
 function deleteRow(id) {
-    if (confirm('Are you sure?')) {
+    if (confirm(i18n['common.confirm'])) {
         $.ajax({
             url: ctx.ajaxUrl + id,
             type: "DELETE"
         }).done(function () {
             ctx.updateTable();
-            successNoty("Deleted");
+            successNoty("common.deleted");
         });
     }
 }
@@ -83,7 +91,7 @@ function save() {
     }).done(function () {
         $("#editRow").modal("hide");
         ctx.updateTable();
-        successNoty("Saved");
+        successNoty("common.saved");
     });
 }
 
@@ -108,10 +116,10 @@ function closeNoty() {
     }
 }
 
-function successNoty(text) {
+function successNoty(key) {
     closeNoty();
     new Noty({
-        text: "<span class='fa fa-lg fa-check'></span> &nbsp;" + text,
+        text: "<span class='fa fa-lg fa-check'></span> &nbsp;" + i18n[key],
         type: 'success',
         layout: "bottomRight",
         timeout: 1000
@@ -122,8 +130,8 @@ function failNoty(jqXHR) {
     closeNoty();
     let errorInfo = jqXHR.responseJSON;
     failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;Error status: " + jqXHR.status +
-            "<br>" + errorInfo.error + "<br>" + errorInfo.details.join("<br>"),
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + errorInfo.status +
+            "<br>" + errorInfo.message + "<br>" + errorInfo.details.join("<br>"),
         type: "error",
         layout: "bottomRight"
     });

@@ -3,6 +3,7 @@ package com.redfox.restaurantvoting.config;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.LocaleResolver;
@@ -50,6 +51,11 @@ public class WebConfig implements WebMvcConfigurer {
         messageSource.setFallbackToSystemLocale(false);
         messageSource.setCacheSeconds(5);
         return messageSource;
+    }
+
+    @Bean
+    public MessageSourceAccessor messageSourceAccessor(MessageSource messageSource) {
+        return new MessageSourceAccessor(messageSource);
     }
 
     @Bean

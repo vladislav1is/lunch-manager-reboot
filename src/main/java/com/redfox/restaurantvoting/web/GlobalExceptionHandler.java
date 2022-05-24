@@ -2,13 +2,16 @@ package com.redfox.restaurantvoting.web;
 
 import com.redfox.restaurantvoting.error.AppException;
 import com.redfox.restaurantvoting.error.DataConflictException;
+import com.redfox.restaurantvoting.error.ErrorType;
 import com.redfox.restaurantvoting.util.validation.Validations;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,64 +35,73 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 @AllArgsConstructor
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    public static final String EXCEPTION_DUPLICATE_EMAIL = "User with this email already exists";
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
+
+    private final MessageSourceAccessor messageSourceAccessor;
 
     private final ErrorAttributes errorAttributes;
 
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<?> appException(WebRequest request, AppException ex) {
-        log.error("ApplicationException: {}", ex.getMessage());
-        return createResponseEntity(request, ex.getOptions(), ex.getStatus());
+    public ResponseEntity<?> appException(WebRequest request, AppException exception) {
+        log.error("ApplicationException: {}", exception.getMessage());
+        return createResponseEntity(request, exception.getOptions(), exception.getStatus(), ErrorType.DATA_ERROR);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> entityNotFoundException(WebRequest request, EntityNotFoundException ex) {
-        log.error("EntityNotFoundException: {}", ex.getMessage());
-        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.UNPROCESSABLE_ENTITY);
+    public ResponseEntity<?> entityNotFoundException(WebRequest request, EntityNotFoundException exception) {
+        log.error("EntityNotFoundException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.UNPROCESSABLE_ENTITY, ErrorType.DATA_NOT_FOUND);
     }
 
     @ExceptionHandler(DataConflictException.class)
-    public ResponseEntity<?> dataConflictException(WebRequest request, DataConflictException ex) {
-        log.error("DataConflictException: {}", ex.getMessage());
-        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT);
+    public ResponseEntity<?> dataConflictException(WebRequest request, DataConflictException exception) {
+        log.error("DataConflictException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DATA_ERROR);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> conflict(WebRequest request, DataIntegrityViolationException exception) {
+        log.error("DataIntegrityViolationException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DATA_ERROR);
     }
 
     @NonNull
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(@NonNull Exception ex, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
-        log.error("Exception", ex);
-        super.handleExceptionInternal(ex, body, headers, status, request);
-        return createResponseEntity(request, ErrorAttributeOptions.of(), status, Validations.getRootCause(ex).getMessage());
+    protected ResponseEntity<Object> handleExceptionInternal(@NonNull Exception exception, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+        log.error("Exception", exception);
+        super.handleExceptionInternal(exception, body, headers, status, request);
+        return createResponseEntity(request, ErrorAttributeOptions.of(), status, ErrorType.APP_ERROR, Validations.getRootCause(exception).getMessage());
     }
 
     @NonNull
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
-        return handleBindingErrors(ex.getBindingResult(), request);
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+        return handleBindingErrors(exception.getBindingResult(), request);
     }
 
     @NonNull
     @Override
-    protected ResponseEntity<Object> handleBindException(BindException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
-        return handleBindingErrors(ex.getBindingResult(), request);
+    protected ResponseEntity<Object> handleBindException(BindException exception, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+        return handleBindingErrors(exception.getBindingResult(), request);
     }
 
     private ResponseEntity<Object> handleBindingErrors(BindingResult result, WebRequest request) {
         String[] details = result.getFieldErrors().stream()
-                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
+                .map(fieldError -> String.format("[%s] %s", fieldError.getField(), messageSourceAccessor.getMessage(fieldError)))
                 .toArray(String[]::new);
 
-        return createResponseEntity(request, ErrorAttributeOptions.defaults(), HttpStatus.UNPROCESSABLE_ENTITY, details);
+        return createResponseEntity(request, ErrorAttributeOptions.defaults(), HttpStatus.UNPROCESSABLE_ENTITY, ErrorType.VALIDATION_ERROR, details);
     }
 
     @SuppressWarnings("unchecked")
-    private <T> ResponseEntity<T> createResponseEntity(WebRequest request, ErrorAttributeOptions options, HttpStatus status, String... details) {
+    private <T> ResponseEntity<T> createResponseEntity(WebRequest request, ErrorAttributeOptions options, HttpStatus status, ErrorType errorType, String... details) {
         Map<String, Object> body = errorAttributes.getErrorAttributes(request, options);
         if (details.length != 0) {
             body.put("details", details);
         }
         body.put("status", status.value());
         body.put("error", status.getReasonPhrase());
+        body.put("message", messageSourceAccessor.getMessage(errorType.getErrorCode()));
         return (ResponseEntity<T>) ResponseEntity.status(status).body(body);
     }
 }
