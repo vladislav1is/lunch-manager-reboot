@@ -13,8 +13,8 @@
     <div class="container text-center">
         <br>
         <h4 class="my-3">${status}</h4>
-        <h2>${messageType}</h2>
-        <h4 class="my-5">${message}</h4>
+        <h2 class="my-2">${messageType}</h2>
+        <h4 class="my-4">${message}</h4>
     </div>
 </div>
 <!--

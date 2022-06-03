@@ -81,7 +81,7 @@ public class WebSecurityConfig {
     @Configuration
     @Order(1)
     // https://stackoverflow.com/questions/33603156/spring-security-multiple-http-config-not-working#33608459
-    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    public static class ApiWebSecurityConfigAdapter extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.antMatcher("/api/**").authorizeRequests()
@@ -98,7 +98,7 @@ public class WebSecurityConfig {
 
     @Configuration
     @Order(2)
-    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    public static class FormLoginWebSecurityConfigAdapter extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
@@ -108,6 +108,7 @@ public class WebSecurityConfig {
                     .antMatchers("/webjars/**").permitAll()
                     .antMatchers("/swagger-ui/**").permitAll()
                     .antMatchers("/v3/api-docs/**").permitAll()
+                    .antMatchers("/profile").hasRole(Role.USER.name())
                     .anyRequest().authenticated()
                     .and()
                     .formLogin()

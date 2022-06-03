@@ -1,8 +1,8 @@
+<%--@elvariable id="userTo" type="com.redfox.restaurantvoting.to.UserTo"--%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
 <header>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark py-0">
         <div class="container">
@@ -31,6 +31,7 @@
                                             <spring:message code="user.title"/>
                                         </button>
                                     </security:authorize>
+                                    <a class="btn btn-secondary" href="profile">${userTo.name}</a>
                                     <button class="btn btn-danger custom-btn" type="submit">
                                         <span class="fa fa-sign-out"></span>
                                     </button>
