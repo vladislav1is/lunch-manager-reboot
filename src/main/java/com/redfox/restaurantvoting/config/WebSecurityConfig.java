@@ -102,6 +102,7 @@ public class WebSecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
+                    .antMatchers("/register").anonymous()
                     .antMatchers("/login").permitAll()
                     .antMatchers("/restaurants").permitAll()
                     .antMatchers("/resources/**").permitAll()

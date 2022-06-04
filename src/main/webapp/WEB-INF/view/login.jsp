@@ -18,8 +18,14 @@
         <c:if test="${param.logout}">
             <div class="message"><spring:message code="login.success"/></div>
         </c:if>
+        <c:if test="${param.register}">
+            <div class="message"><spring:message code="profile.registered"/></div>
+        </c:if>
         <security:authorize access="isAnonymous()">
             <div class="pt-2">
+                <a class="btn btn-lg btn-secondary mt-2" href="register">
+                        <spring:message code="profile.register"/>&raquo;
+                </a>
                 <button type="submit" class="btn btn-lg btn-primary mt-2" onclick="login('user@yandex.ru', 'password')">
                     <spring:message code="app.login"/> User
                 </button>

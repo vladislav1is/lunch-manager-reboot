@@ -1,8 +1,8 @@
-<%--@elvariable id="userTo" type="com.redfox.restaurantvoting.to.UserTo"--%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="restaurantvoting" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <jsp:include page="fragments/metadata.jsp"/>
@@ -14,9 +14,10 @@
     <div class="container">
         <div class="row">
             <div class="col-5 offset-3">
-                <h3><spring:message code="profile.edit"/></h3>
-                <form:form class="form-group" modelAttribute="userTo" method="post" action="profile"
-                           charset="utf-8" accept-charset="UTF-8">
+                <c:set var="isAnonymous" value="${userTo.id == null ? true : false}" scope="request"/>
+                <h3><spring:message code="${isAnonymous ? 'profile.register' : 'profile.edit'}"/></h3>
+                <form:form class="form-group" modelAttribute="userTo" method="post"
+                           action="${isAnonymous ? 'register' : 'profile'}" charset="utf-8" accept-charset="UTF-8">
 
                     <form:hidden path="id"/>
                     <restaurantvoting:inputField labelCode="user.name" name="name"/>
