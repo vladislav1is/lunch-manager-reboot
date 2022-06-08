@@ -1,10 +1,7 @@
 package com.redfox.restaurantvoting.web.restaurant;
 
 import com.redfox.restaurantvoting.model.Restaurant;
-import com.redfox.restaurantvoting.repository.MenuItemRepository;
-import com.redfox.restaurantvoting.repository.RestaurantRepository;
-import com.redfox.restaurantvoting.repository.UserRepository;
-import com.redfox.restaurantvoting.repository.VoteRepository;
+import com.redfox.restaurantvoting.repository.*;
 import com.redfox.restaurantvoting.util.JsonUtil;
 import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import com.redfox.restaurantvoting.web.AbstractControllerTest;
@@ -15,12 +12,17 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import static com.redfox.restaurantvoting.web.GlobalExceptionHandler.EXCEPTION_DUPLICATE_NAME_AND_ADDRESS;
 import static com.redfox.restaurantvoting.web.restaurant.RestaurantTestData.*;
 import static com.redfox.restaurantvoting.web.user.UserTestData.*;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,6 +36,8 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     private RestaurantRepository restaurantRepository;
     @Autowired
     private MenuItemRepository menuItemRepository;
+    @Autowired
+    private DishRefRepository dishRefRepository;
     @Autowired
     private VoteRepository voteRepository;
     @Autowired
@@ -93,6 +97,7 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         voteRepository.deleteByRestaurantId(MAC_ID);
         menuItemRepository.deleteByRestaurantId(MAC_ID);
+        dishRefRepository.deleteAllById(List.of(mac_ff.id(), mac_c.id(), mac_fof.id(), mac_dc.id()));
         perform(MockMvcRequestBuilders.delete(REST_URL + MAC_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -143,5 +148,79 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         assertFalse(restaurantRepository.getById(YAKITORIYA_ID).isEnabled());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void updateInvalid() throws Exception {
+        Restaurant invalid = new Restaurant(dodo);
+        invalid.setName("");
+        perform(MockMvcRequestBuilders.put(REST_URL + DODO_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void createInvalid() throws Exception {
+        Restaurant invalid = new Restaurant(dodo);
+        invalid.setName("");
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    @WithUserDetails(value = ADMIN_MAIL)
+    void updateDuplicate() throws Exception {
+        Restaurant updated = new Restaurant(MAC_ID, dodo.getName(), dodo.getAddress());
+        perform(MockMvcRequestBuilders.put(REST_URL + MAC_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString(getMessage(EXCEPTION_DUPLICATE_NAME_AND_ADDRESS))));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    @WithUserDetails(value = ADMIN_MAIL)
+    void createDuplicate() throws Exception {
+        Restaurant expected = new Restaurant(null, dodo.getName(), dodo.getAddress());
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(expected)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString(getMessage(EXCEPTION_DUPLICATE_NAME_AND_ADDRESS))));
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void updateHtmlUnsafe() throws Exception {
+        Restaurant updated = new Restaurant(dodo);
+        updated.setName("<script>alert(123)</script>");
+        perform(MockMvcRequestBuilders.put(REST_URL + DODO_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void createHtmlUnsafe() throws Exception {
+        Restaurant expected = new Restaurant(dodo);
+        expected.setAddress("<script>alert(123)</script>");
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(expected)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 }

@@ -3,6 +3,7 @@ package com.redfox.restaurantvoting.web;
 import com.redfox.restaurantvoting.error.AppException;
 import com.redfox.restaurantvoting.error.DataConflictException;
 import com.redfox.restaurantvoting.error.ErrorType;
+import com.redfox.restaurantvoting.error.RestaurantConstraintViolationException;
 import com.redfox.restaurantvoting.util.validation.Validations;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
@@ -36,6 +38,7 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
+    public static final String EXCEPTION_DUPLICATE_NAME_AND_ADDRESS = "exception.restaurant.duplicateNameAndAddress";
 
     private final MessageSourceAccessor messageSourceAccessor;
 
@@ -57,6 +60,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> dataConflictException(WebRequest request, DataConflictException exception) {
         log.error("DataConflictException: {}", exception.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DATA_ERROR);
+    }
+
+    @ExceptionHandler(RestaurantConstraintViolationException.class)
+    public ResponseEntity<?> restaurantConstraintViolationException(WebRequest request, RestaurantConstraintViolationException exception) {
+        log.error("RestaurantConstraintViolationException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.RESTAURANT_CONSTRAINT_VIOLATION);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -86,10 +95,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> handleBindingErrors(BindingResult result, WebRequest request) {
-        String[] details = result.getFieldErrors().stream()
-                .map(fieldError -> String.format("[%s] %s", fieldError.getField(), messageSourceAccessor.getMessage(fieldError)))
-                .toArray(String[]::new);
-
+        Stream<String> fieldDetails = result.getFieldErrors().stream()
+                .map(fieldError -> String.format("[%s] %s", fieldError.getField(), messageSourceAccessor.getMessage(fieldError)));
+        Stream<String> objectDetails = result.getGlobalErrors().stream()
+                .map(objectError -> String.format("[%s] %s", objectError.getObjectName(), messageSourceAccessor.getMessage(objectError)));
+        String[] details = Stream.concat(fieldDetails, objectDetails).toArray(String[]::new);
         return createResponseEntity(request, ErrorAttributeOptions.defaults(), HttpStatus.UNPROCESSABLE_ENTITY, ErrorType.VALIDATION_ERROR, details);
     }
 

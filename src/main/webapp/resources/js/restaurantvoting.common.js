@@ -36,6 +36,21 @@ function makeEditable(datatableOpts) {
     });
 }
 
+function enable(chkbox, id) {
+    let enabled = chkbox.is(":checked");
+    //  https://stackoverflow.com/a/22213543/548473
+    $.ajax({
+        url: ctx.ajaxUrl + id,
+        type: "POST",
+        data: "enabled=" + enabled
+    }).done(function () {
+        chkbox.closest("tr").attr("data-entity-enabled", enabled);
+        successNoty(enabled ? "common.enabled" : "common.disabled");
+    }).fail(function () {
+        $(chkbox).prop("checked", !enabled);
+    });
+}
+
 function add() {
     $("#modalTitle").html(i18n["addTitle"]);
     form.find(":input").val("");
@@ -131,7 +146,7 @@ function failNoty(jqXHR) {
     let errorInfo = jqXHR.responseJSON;
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + errorInfo.status +
-            "<br>" + errorInfo.message + "<br>" + errorInfo.details.join("<br>"),
+            "<br>" + errorInfo.message + (errorInfo.details !=null ? "<br>" + errorInfo.details.join("<br>") : ""),
         type: "error",
         layout: "bottomRight"
     });

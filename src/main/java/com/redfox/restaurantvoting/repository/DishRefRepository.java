@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.redfox.restaurantvoting.util.validation.Validations.checkRestaurantUsage;
+
 @Transactional(readOnly = true)
 public interface DishRefRepository extends BaseRepository<DishRef> {
 
@@ -20,5 +22,9 @@ public interface DishRefRepository extends BaseRepository<DishRef> {
     default DishRef checkBelong(int restaurantId, int id) {
         return get(restaurantId, id).orElseThrow(
                 () -> new DataConflictException("DishRef id=" + id + " doesn't belong to restaurant id=" + restaurantId));
+    }
+
+    default void checkUsage(int restaurantId) {
+        checkRestaurantUsage(getByRestaurant(restaurantId).isEmpty(), restaurantId);
     }
 }

@@ -12,6 +12,7 @@ public class Users {
     public static User prepareToSave(User user) {
         user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
         user.setEmail(user.getEmail().toLowerCase());
+        user.setName(user.getName().strip());
         return user;
     }
 }

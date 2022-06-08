@@ -27,11 +27,17 @@
                                         <spring:message code="restaurant.title"/>
                                     </button>
                                     <security:authorize access="hasRole('ADMIN')">
+                                        <button type="button" onclick="location.href='restaurants/editor';"
+                                                class="btn btn-secondary">
+                                            <spring:message code="app.editor"/>
+                                        </button>
                                         <button type="button" onclick="location.href='users';" class="btn btn-secondary">
                                             <spring:message code="user.title"/>
                                         </button>
                                     </security:authorize>
-                                    <a class="btn btn-secondary" href="profile"><security:authentication property="principal.user.name"/></a>
+                                    <button type="button" onclick="location.href='profile';" class="btn btn-secondary">
+                                        <security:authentication property="principal.user.name"/>
+                                    </button>
                                     <button class="btn btn-danger custom-btn" type="submit">
                                         <span class="fa fa-sign-out"></span>
                                     </button>

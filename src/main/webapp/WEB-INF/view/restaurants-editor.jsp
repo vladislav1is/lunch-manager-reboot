@@ -3,29 +3,27 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
-    <title><spring:message code="user.title"/></title>
+    <title><spring:message code="restaurant.editor"/></title>
     <jsp:include page="fragments/metadata.jsp"/>
     <jsp:include page="fragments/datatables.jsp"/>
 </head>
 <body>
 <script src="resources/js/restaurantvoting.common.js" defer></script>
-<script src="resources/js/restaurantvoting.users.js" defer></script>
+<script src="resources/js/restaurantvoting.restaurants-editor.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <div class="jumbotron pt-4">
     <div class="container">
-        <h3 class="text-center"><spring:message code="user.title"/></h3>
+        <h3 class="text-center"><spring:message code="restaurant.editor"/></h3>
         <button class="btn btn-primary" onclick="add()">
             <span class="fa fa-plus"></span>
-            <spring:message code="user.add"/>
+            <spring:message code="restaurant.add"/>
         </button>
         <table class="table table-striped mt-3" id="datatable">
             <thead>
             <tr>
-                <th><spring:message code="user.name"/></th>
-                <th><spring:message code="user.email"/></th>
-                <th><spring:message code="user.roles"/></th>
-                <th><spring:message code="user.active"/></th>
-                <th><spring:message code="user.registered"/></th>
+                <th><spring:message code="restaurant.name"/></th>
+                <th><spring:message code="restaurant.address"/></th>
+                <th><spring:message code="restaurant.active"/></th>
                 <th></th>
                 <th></th>
             </tr>
@@ -33,6 +31,7 @@
         </table>
     </div>
 </div>
+
 <div class="modal fade" tabindex="-1" id="editRow">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -44,27 +43,14 @@
                 <form id="detailsForm">
                     <input type="hidden" id="id" name="id">
                     <div class="form-group">
-                        <label for="name" class="col-form-label"><spring:message code="user.name"/></label>
+                        <label for="name" class="col-form-label"><spring:message code="restaurant.name"/></label>
                         <input type="text" class="form-control" id="name" name="name"
-                               placeholder="<spring:message code="user.name"/>">
+                               placeholder="<spring:message code="restaurant.name"/>">
                     </div>
                     <div class="form-group">
-                        <label for="email" class="col-form-label"><spring:message code="user.email"/></label>
-                        <input type="email" class="form-control" id="email" name="email"
-                               placeholder="<spring:message code="user.email"/>">
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="col-form-label"><spring:message code="user.password"/></label>
-                        <input type="password" class="form-control" id="password" name="password"
-                               placeholder="<spring:message code="user.password"/>">
-                    </div>
-                    <div class="form-group">
-                        <label for="role"><spring:message code="user.role"/></label>
-                        <select class="form-control" id="role" name="role">
-                            <option value="USER" selected>USER</option>
-                            <option value="R_ADMIN">R_ADMIN</option>
-                            <option value="ADMIN">ADMIN</option>
-                        </select>
+                        <label for="address" class="col-form-label"><spring:message code="restaurant.address"/></label>
+                        <input type="text" class="form-control" id="address" name="address"
+                               placeholder="<spring:message code="restaurant.address"/>">
                     </div>
                 </form>
             </div>
@@ -84,6 +70,6 @@
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 <jsp:include page="fragments/i18n.jsp">
-    <jsp:param name="page" value="user"/>
+    <jsp:param name="page" value="restaurant"/>
 </jsp:include>
 </html>

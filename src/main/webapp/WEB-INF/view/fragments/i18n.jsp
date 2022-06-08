@@ -5,7 +5,7 @@
 <script type="text/javascript" defer>
     const i18n = [];
 
-    <%-- user.add/user.edit --%>
+    <%-- param.add/param.edit --%>
     i18n["addTitle"] = '<spring:message code="${param.page}.add"/>';
     i18n["editTitle"] = '<spring:message code="${param.page}.edit"/>';
 

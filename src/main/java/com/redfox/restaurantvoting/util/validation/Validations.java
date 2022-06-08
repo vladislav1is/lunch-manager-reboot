@@ -1,9 +1,7 @@
 package com.redfox.restaurantvoting.util.validation;
 
 import com.redfox.restaurantvoting.HasId;
-import com.redfox.restaurantvoting.error.ErrorType;
-import com.redfox.restaurantvoting.error.IllegalRequestDataException;
-import com.redfox.restaurantvoting.error.NotFoundException;
+import com.redfox.restaurantvoting.error.*;
 import lombok.experimental.UtilityClass;
 import org.slf4j.Logger;
 import org.springframework.core.NestedExceptionUtils;
@@ -20,7 +18,7 @@ public class Validations {
         }
     }
 
-    //  Conservative when you reply, but accept liberally (http://stackoverflow.com/a/32728226/548473)
+    // Conservative when you reply, but accept liberally (http://stackoverflow.com/a/32728226/548473)
     public static void assureIdConsistent(HasId bean, int id) {
         if (bean.isNew()) {
             bean.setId(id);
@@ -41,13 +39,13 @@ public class Validations {
         }
     }
 
-    public static void checkModification(int count, int id) {
-        if (count == 0) {
-            throw new NotFoundException("Entity with id=" + id + " not found");
+    public static void checkRestaurantUsage(boolean isEmpty, int restaurantId) {
+        if (!isEmpty) {
+            throw new RestaurantConstraintViolationException("Restaurant with restaurantId=" + restaurantId + " has dishes. Delete restaurant dishes.");
         }
     }
 
-    //  https://stackoverflow.com/a/65442410/548473
+    // https://stackoverflow.com/a/65442410/548473
     @NonNull
     public static Throwable getRootCause(@NonNull Throwable t) {
         Throwable rootCause = NestedExceptionUtils.getRootCause(t);

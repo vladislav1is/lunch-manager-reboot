@@ -1,10 +1,10 @@
-const userAjaxUrl = "admin/users/";
+const restaurantAjaxUrl = "admin/restaurants/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: userAjaxUrl,
+    ajaxUrl: restaurantAjaxUrl,
     updateTable: function () {
-        $.get(userAjaxUrl, updateTableByData);
+        $.get(restaurantAjaxUrl, updateTableByData);
     }
 }
 
@@ -15,16 +15,7 @@ $(function () {
                 "data": "name"
             },
             {
-                "data": "email",
-                "render": function (data, type, row) {
-                    if (type === "display") {
-                        return "<a href='mailto:" + data + "'>" + data + "</a>";
-                    }
-                    return data;
-                }
-            },
-            {
-                "data": "roles"
+                "data": "address"
             },
             {
                 "data": "enabled",
@@ -34,9 +25,6 @@ $(function () {
                     }
                     return data;
                 }
-            },
-            {
-                "data": "registered"
             },
             {
                 "orderable": false,

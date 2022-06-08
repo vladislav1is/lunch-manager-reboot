@@ -10,18 +10,18 @@ import java.util.Optional;
 
 import static com.redfox.restaurantvoting.util.validation.Validations.checkModification;
 
-//  https://stackoverflow.com/questions/42781264/multiple-base-repositories-in-spring-data-jpa
+// https://stackoverflow.com/questions/42781264/multiple-base-repositories-in-spring-data-jpa
 @NoRepositoryBean
 public interface BaseRepository<T> extends JpaRepository<T, Integer> {
 
-    //  https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query.spel-expressions
+    // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query.spel-expressions
     @Transactional
     @Modifying
     @Query("DELETE FROM #{#entityName} u WHERE u.id=:id")
     int delete(int id);
 
     default void deleteExisted(int id) {
-        checkModification(delete(id), id);
+        checkModification(delete(id) == 0, id);
     }
 
     default Optional<T> getExisted(int id) {

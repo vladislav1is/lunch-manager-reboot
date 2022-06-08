@@ -4,6 +4,7 @@ public enum ErrorType {
     APP_ERROR("error.appError"),
     DATA_NOT_FOUND("error.dataNotFound"),
     DATA_ERROR("error.dataError"),
+    RESTAURANT_CONSTRAINT_VIOLATION("error.restaurantConstraintViolation"),
     VALIDATION_ERROR("error.validationError"),
     WRONG_REQUEST("error.wrongRequest");
 

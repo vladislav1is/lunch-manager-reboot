@@ -2,6 +2,8 @@ package com.redfox.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.redfox.restaurantvoting.HasRestaurantConstraint;
+import com.redfox.restaurantvoting.mapper.Default;
 import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -18,7 +20,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true, exclude = "menuItems")
-public class Restaurant extends NamedEntity {
+public class Restaurant extends NamedEntity implements HasRestaurantConstraint {
     @Column(name = "address")
     @Size(max = 1024)
     @NoHtml
@@ -34,8 +36,20 @@ public class Restaurant extends NamedEntity {
     @JsonInclude(JsonInclude.Include.NON_EMPTY) // https://stackoverflow.com/a/27964775/548473
     private List<MenuItem> menuItems;
 
+    @Default
     public Restaurant(Integer id, String name, @Nullable String address) {
         super(id, name);
         this.address = address;
+    }
+
+    public Restaurant(Integer id, String name, @Nullable String address, boolean enabled, List<MenuItem> menuItems) {
+        super(id, name);
+        this.address = address;
+        this.enabled = enabled;
+        this.menuItems = menuItems;
+    }
+
+    public Restaurant(Restaurant r) {
+        this(r.id, r.name, r.address, r.enabled, r.menuItems);
     }
 }
