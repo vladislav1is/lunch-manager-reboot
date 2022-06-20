@@ -36,7 +36,7 @@ function makeEditable(datatableOpts) {
     });
 }
 
-function enable(chkbox, id) {
+function enable(chkbox, id, isGroup) {
     let enabled = chkbox.is(":checked");
     //  https://stackoverflow.com/a/22213543/548473
     $.ajax({
@@ -44,11 +44,23 @@ function enable(chkbox, id) {
         type: "POST",
         data: "enabled=" + enabled
     }).done(function () {
-        chkbox.closest("tr").attr("data-entity-enabled", enabled);
-        successNoty(enabled ? "common.enabled" : "common.disabled");
+        if (isGroup) {
+            ctx.updateTable();
+            successNoty(enabled ? "common.group.enabled" : "common.group.disabled");
+        } else {
+            chkbox.closest("tr").attr("data-entity-enabled", enabled);
+            successNoty(enabled ? "common.enabled" : "common.disabled");
+        }
     }).fail(function () {
         $(chkbox).prop("checked", !enabled);
     });
+}
+
+function renderEnableBtn(data, type, row, isGroup) {
+    if (type === "display") {
+        return "<input type='checkbox' " + (data ? "checked" : "") + " onclick='enable($(this), " + row.id + ", " + isGroup + ");'/>";
+    }
+    return data;
 }
 
 function add() {
@@ -110,6 +122,13 @@ function save() {
     });
 }
 
+function saveMenuItem() {
+    if (Object.is($('#price').val(), "")) {
+        form.find('#price').val(0);
+    }
+    save();
+}
+
 function renderEditBtn(data, type, row) {
     if (type === "display") {
         return "<a onclick='updateRow(" + row.id + ");'><span class='fa text-dark fa-pencil'></span></a>";
@@ -119,6 +138,20 @@ function renderEditBtn(data, type, row) {
 function renderDeleteBtn(data, type, row) {
     if (type === "display") {
         return "<a onclick='deleteRow(" + row.id + ");'><span class='fa text-dark fa-remove'></span></a>";
+    }
+}
+
+function renderEditMenuBtn(data, type, row) {
+    if (type === "display") {
+        return "<button type='button' onclick=\"window.location.href='restaurants/" + row.id + "/menu-items/editor'\"\n" +
+            " class='btn btn-sm btn-secondary'>" + i18n["common.edit"] + "</button>";
+    }
+}
+
+function renderMenuBtn(data, type, row) {
+    if (type === "display") {
+        return "<button type='button' onclick=\"window.location.href='restaurants/" + row.id + "/menu-items'\"\n" +
+            " class='btn btn-sm btn-secondary'>" + i18n["common.view"] + "</button>";
     }
 }
 
@@ -146,7 +179,7 @@ function failNoty(jqXHR) {
     let errorInfo = jqXHR.responseJSON;
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + errorInfo.status +
-            "<br>" + errorInfo.message + (errorInfo.details !=null ? "<br>" + errorInfo.details.join("<br>") : ""),
+            "<br>" + errorInfo.message + (errorInfo.details != null ? "<br>" + errorInfo.details.join("<br>") : ""),
         type: "error",
         layout: "bottomRight"
     });

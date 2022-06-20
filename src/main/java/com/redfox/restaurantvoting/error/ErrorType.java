@@ -6,6 +6,7 @@ public enum ErrorType {
     DATA_ERROR("error.dataError"),
     DATA_DISABLED("error.dataDisabled"),
     RESTAURANT_CONSTRAINT_VIOLATION("error.restaurantConstraintViolation"),
+    DISH_REF_CONSTRAINT_VIOLATION("error.dishRefConstraintViolation"),
     VALIDATION_ERROR("error.validationError"),
     WRONG_REQUEST("error.wrongRequest");
 

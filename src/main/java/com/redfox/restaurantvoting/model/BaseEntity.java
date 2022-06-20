@@ -22,7 +22,7 @@ public abstract class BaseEntity implements Persistable<Integer>, HasId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY) // https://stackoverflow.com/a/28025008/548473
-    @JsonView(View.UserWithoutRestaurants.class)
+    @JsonView({View.UserWithoutRestaurants.class, View.MenuItemWithoutRestaurantId.class})
     protected Integer id;
 
     //  doesn't work for hibernate lazy proxy

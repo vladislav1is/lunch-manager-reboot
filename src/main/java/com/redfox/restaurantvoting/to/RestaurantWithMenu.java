@@ -6,8 +6,8 @@ import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
-import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @ToString(callSuper = true)
 public class RestaurantWithMenu extends NamedTo implements HasRestaurantConstraint {
 
-    public RestaurantWithMenu(Integer id, String name, @Nullable String address, List<DishRef> dishRefs) {
+    public RestaurantWithMenu(Integer id, String name, String address, List<DishRef> dishRefs) {
         super(id, name);
         this.address = address;
         this.dishRefs = dishRefs;
@@ -24,7 +24,7 @@ public class RestaurantWithMenu extends NamedTo implements HasRestaurantConstrai
 
     @Size(max = 1024)
     @NoHtml
-    @Nullable
+    @NotBlank
     String address;
 
     List<DishRef> dishRefs;

@@ -88,7 +88,7 @@ public class RestaurantTestData {
     }
 
     public static MenuItem getNewMenuItem() {
-        return new MenuItem(null, LocalDate.now(), yakitoriya, yakitoriya_c);
+        return new MenuItem(null, LocalDate.now().plusDays(1), yakitoriya, yakitoriya_c);
     }
 
     public static MenuItem getUpdatedMenuItem() {

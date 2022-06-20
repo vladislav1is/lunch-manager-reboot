@@ -27,6 +27,7 @@
         <webjars-jquery.version>3.6.0</webjars-jquery.version>
         <webjars-noty.version>3.1.4</webjars-noty.version>
         <webjars-datatables.version>1.10.25</webjars-datatables.version>
+        <webjars-datetimepicker.version>2.5.20-1</webjars-datetimepicker.version>
         <!-- Swagger -->
         <springdoc.version>1.6.2</springdoc.version>
     </properties>
@@ -148,6 +149,11 @@
                     <artifactId>jquery</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>datetimepicker</artifactId>
+            <version>${webjars-datetimepicker.version}</version>
         </dependency>
 
         <!-- Swagger -->

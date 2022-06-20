@@ -1,5 +1,7 @@
 package com.redfox.restaurantvoting.to;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.*;
 
@@ -14,6 +16,7 @@ public class NamedTo extends BaseTo {
     @NotBlank
     @Size(min = 2, max = 100)
     @NoHtml
+    @JsonView(View.MenuItemWithoutEnabled.class)
     protected String name;
 
     protected NamedTo(Integer id, String name) {

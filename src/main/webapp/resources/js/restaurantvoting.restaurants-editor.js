@@ -15,16 +15,16 @@ $(function () {
                 "data": "name"
             },
             {
-                "data": "address"
+                "orderable": false,
+                "defaultContent": "",
+                "render": renderEditMenuBtn
             },
             {
                 "data": "enabled",
-                "render": function (data, type, row) {
-                    if (type === "display") {
-                        return "<input type='checkbox' " + (data ? "checked" : "") + " onclick='enable($(this)," + row.id + ");'/>";
-                    }
-                    return data;
-                }
+                "render": renderEnableBtn(data, type, row, false)
+            },
+            {
+                "data": "address"
             },
             {
                 "orderable": false,

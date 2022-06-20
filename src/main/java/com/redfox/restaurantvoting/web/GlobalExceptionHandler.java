@@ -36,6 +36,8 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
     public static final String EXCEPTION_DUPLICATE_NAME_AND_ADDRESS = "exception.restaurant.duplicateNameAndAddress";
+    public static final String EXCEPTION_DUPLICATE_NAME_AND_DATE = "exception.menu-item.duplicateNameAndDate";
+    public static final String EXCEPTION_DUPLICATE_DISH_REF_AND_DATE = "exception.menu-item.duplicateDishRefAndDate";
 
     private final MessageSourceAccessor messageSourceAccessor;
 
@@ -69,6 +71,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> restaurantConstraintViolationException(WebRequest request, RestaurantConstraintViolationException exception) {
         log.error("RestaurantConstraintViolationException: {}", exception.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.RESTAURANT_CONSTRAINT_VIOLATION);
+    }
+
+    @ExceptionHandler(DishRefConstraintViolationException.class)
+    public ResponseEntity<?> dishRefConstraintViolationException(WebRequest request, DishRefConstraintViolationException exception) {
+        log.error("DishRefConstraintViolationException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DISH_REF_CONSTRAINT_VIOLATION);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

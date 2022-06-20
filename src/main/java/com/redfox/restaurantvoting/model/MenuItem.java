@@ -1,12 +1,17 @@
 package com.redfox.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.redfox.restaurantvoting.HasMenuItemConstraint;
+import com.redfox.restaurantvoting.View;
+import com.redfox.restaurantvoting.util.DateTimeUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,9 +23,11 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @ToString(callSuper = true, exclude = {"restaurant", "dishRef"})
-public class MenuItem extends BaseEntity {
+public class MenuItem extends BaseEntity implements HasMenuItemConstraint {
     @Column(name = "actual_date", nullable = false)
     @NotNull
+    @DateTimeFormat(pattern = DateTimeUtil.DATE_PATTERN)
+    @JsonView(View.MenuItemWithoutRestaurantId.class)
     private LocalDate actualDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -30,7 +37,7 @@ public class MenuItem extends BaseEntity {
     private Restaurant restaurant;
 
     @Column(name = "restaurant_id", insertable = false, updatable = false)
-    private int restaurantId;
+    private Integer restaurantId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dish_ref_id")
@@ -39,7 +46,8 @@ public class MenuItem extends BaseEntity {
     private DishRef dishRef;
 
     @Column(name = "dish_ref_id", insertable = false, updatable = false)
-    private int dishRefId;
+    @JsonView(View.MenuItemWithoutRestaurantId.class)
+    private Integer dishRefId;
 
     public MenuItem(Integer id, @NotNull LocalDate actualDate, Restaurant restaurant, DishRef dishRef) {
         super(id);

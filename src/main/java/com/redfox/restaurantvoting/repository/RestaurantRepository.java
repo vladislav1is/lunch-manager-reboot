@@ -1,6 +1,6 @@
 package com.redfox.restaurantvoting.repository;
 
-import com.redfox.restaurantvoting.error.DataConflictException;
+import com.redfox.restaurantvoting.error.DataDisabledException;
 import com.redfox.restaurantvoting.model.Restaurant;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
@@ -29,7 +29,7 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
             WHERE r.id=:id AND r.enabled=true AND mi.actualDate=:date AND d.enabled=true
             ORDER BY d.name ASC
             """)
-    Restaurant getWithMenuByRestaurantAndDate(int id, LocalDate date);
+    Optional<Restaurant> findWithMenuByRestaurantAndDate(int id, LocalDate date);
 
     // https://docs.jboss.org/hibernate/orm/5.2/userguide/html_single/Hibernate_User_Guide.html#hql-distinct
     // https://stackoverflow.com/questions/1346181/how-does-distinct-work-when-using-jpa-and-hibernate#53406102
@@ -53,7 +53,7 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
 
     default void checkAvailable(int id) {
         if (!getById(id).isEnabled()) {
-            throw new DataConflictException("Restaurant " + id + " is unavailable");
+            throw new DataDisabledException("Restaurant " + id + " is unavailable");
         }
     }
 }

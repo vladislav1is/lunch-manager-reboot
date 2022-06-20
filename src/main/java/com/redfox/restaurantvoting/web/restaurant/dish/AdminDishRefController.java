@@ -1,4 +1,4 @@
-package com.redfox.restaurantvoting.web.restaurant;
+package com.redfox.restaurantvoting.web.restaurant.dish;
 
 import com.redfox.restaurantvoting.model.DishRef;
 import com.redfox.restaurantvoting.repository.DishRefRepository;
@@ -35,11 +35,12 @@ public class AdminDishRefController {
     @GetMapping("/{id}")
     public ResponseEntity<DishRef> get(@PathVariable int restaurantId, @PathVariable int id) {
         log.info("get for restaurantId={}, id={}", restaurantId, id);
-        return ResponseEntity.of(repository.get(restaurantId, id));
+        return ResponseEntity.of(repository.findByRestaurantIdAndDishRef(restaurantId, id));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
     // No cache evict: couldn't delete, if used in MenuItem
     public void delete(@PathVariable int restaurantId, @PathVariable int id) {
         log.info("delete for restaurantId={}, id={}", restaurantId, id);
@@ -50,7 +51,7 @@ public class AdminDishRefController {
     @GetMapping
     public List<DishRef> getByRestaurant(@PathVariable int restaurantId) {
         log.info("getByRestaurant for restaurantId={}", restaurantId);
-        return repository.getByRestaurant(restaurantId);
+        return repository.getAllByRestaurantId(restaurantId);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -67,6 +68,7 @@ public class AdminDishRefController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     // https://stackoverflow.com/questions/25379051/548473
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "allRestaurantsWithMenu", allEntries = true),
             @CacheEvict(value = "restaurantWithMenu", key = "#restaurantId")

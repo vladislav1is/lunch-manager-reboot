@@ -11,7 +11,6 @@ import com.redfox.restaurantvoting.to.RestaurantWithMenu;
 import com.redfox.restaurantvoting.util.Restaurants;
 import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import com.redfox.restaurantvoting.web.SecurityUtil;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,14 +28,13 @@ import java.util.Optional;
 import static com.redfox.restaurantvoting.util.validation.Validations.assureIdConsistent;
 import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 
-@RequiredArgsConstructor
 @Slf4j
 public abstract class AbstractRestaurantController {
 
     @Autowired
     private RestaurantRepository restaurantRepository;
     @Autowired
-    private RestaurantMapper restaurantMapper;
+    protected RestaurantMapper restaurantMapper;
 
     @Autowired
     private UserRepository userRepository;
@@ -52,8 +50,19 @@ public abstract class AbstractRestaurantController {
         binder.addValidators(nameValidator);
     }
 
-    public Optional<Restaurant> findById(int id) {
-        return restaurantRepository.findById(id);
+    @Transactional
+    public Optional<Restaurant> findByRestaurant(int id) {
+        log.info("findById {}", id);
+        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
+        restaurant.ifPresent(r -> restaurantRepository.checkAvailable(r.id()));
+        return restaurant;
+    }
+
+    @Transactional
+    public Optional<Restaurant> findWithMenuByRestaurantForToday(int id) {
+        log.info("getWithMenuByRestaurantForToday {}", id);
+        restaurantRepository.checkAvailable(id);
+        return restaurantRepository.findWithMenuByRestaurantAndDate(id, LocalDate.now());
     }
 
     @Cacheable("restaurants")
@@ -80,14 +89,6 @@ public abstract class AbstractRestaurantController {
         return restaurantMapper.toToList(restaurants);
     }
 
-    @Cacheable("restaurantWithMenu")
-    public RestaurantWithMenu getWithMenuByRestaurantForToday(int id) {
-        log.info("getWithMenuByRestaurantForToday {}", id);
-        restaurantRepository.checkAvailable(id);
-        Restaurant restaurant = restaurantRepository.getWithMenuByRestaurantAndDate(id, LocalDate.now());
-        return restaurantMapper.toTo(restaurant);
-    }
-
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "restaurants", allEntries = true),
@@ -101,6 +102,7 @@ public abstract class AbstractRestaurantController {
         restaurantRepository.deleteExisted(id);
     }
 
+    @Transactional
     public Restaurant create(Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);

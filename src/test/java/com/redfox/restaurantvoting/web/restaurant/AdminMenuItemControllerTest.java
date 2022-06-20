@@ -30,11 +30,11 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
     private MenuItemRepository menuItemRepository;
 
     private String getUrl(int restaurantId) {
-        return REST_URL + restaurantId + "/menu-items/";
+        return REST_URL + restaurantId + "/menu-items";
     }
 
     private String getUrl(int restaurantId, int id) {
-        return getUrl(restaurantId) + id;
+        return getUrl(restaurantId) + "/" + id;
     }
 
     @Test
@@ -74,7 +74,7 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(getUrl(DODO_ID, dodo_3.id())))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertFalse(menuItemRepository.getByRestaurantIdAndMenuItem(DODO_ID, dodo_3.id()).isPresent());
+        assertFalse(menuItemRepository.findByRestaurantIdAndMenuItem(DODO_ID, dodo_3.id()).isPresent());
     }
 
     @Test
@@ -100,7 +100,7 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void getBetweenDatesByRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get(getUrl(YAKITORIYA_ID) + "filter")
+        perform(MockMvcRequestBuilders.get(getUrl(YAKITORIYA_ID) + "/filter")
                 .param("startDate", now().format(DateTimeFormatter.ISO_DATE))
                 .param("endDate", now().format(DateTimeFormatter.ISO_DATE)))
                 .andDo(print())
@@ -113,7 +113,9 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         MenuItem updated = getUpdatedMenuItem();
         updated.setId(null);
-        perform(MockMvcRequestBuilders.put(getUrl(YAKITORIYA_ID, yakitoriya_1.id()))
+        String url = getUrl(YAKITORIYA_ID, yakitoriya_1.id());
+        perform(MockMvcRequestBuilders.put(url)
+                .servletPath(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
@@ -126,7 +128,9 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithLocation() throws Exception {
         MenuItem newMenuItem = getNewMenuItem();
-        ResultActions action = perform(MockMvcRequestBuilders.post(getUrl(YAKITORIYA_ID))
+        String url = getUrl(YAKITORIYA_ID);
+        ResultActions action = perform(MockMvcRequestBuilders.post(url)
+                .servletPath(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMenuItem)))
                 .andExpect(status().isCreated());

@@ -15,6 +15,11 @@ $(function () {
                 "data": "name"
             },
             {
+                "orderable": false,
+                "defaultContent": "",
+                "render": renderMenuBtn
+            },
+            {
                 "data": "address"
             }
         ],

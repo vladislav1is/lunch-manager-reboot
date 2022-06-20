@@ -22,8 +22,9 @@
             <thead>
             <tr>
                 <th><spring:message code="restaurant.name"/></th>
-                <th><spring:message code="restaurant.address"/></th>
+                <th><spring:message code="restaurant.menu"/></th>
                 <th><spring:message code="restaurant.active"/></th>
+                <th><spring:message code="restaurant.address"/></th>
                 <th></th>
                 <th></th>
             </tr>

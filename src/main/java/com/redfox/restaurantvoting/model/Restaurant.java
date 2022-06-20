@@ -8,9 +8,9 @@ import com.redfox.restaurantvoting.util.validation.NoHtml;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class Restaurant extends NamedEntity implements HasRestaurantConstraint {
     @Column(name = "address")
     @Size(max = 1024)
     @NoHtml
-    @Nullable
+    @NotBlank
     private String address;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
@@ -37,12 +37,12 @@ public class Restaurant extends NamedEntity implements HasRestaurantConstraint {
     private List<MenuItem> menuItems;
 
     @Default
-    public Restaurant(Integer id, String name, @Nullable String address) {
+    public Restaurant(Integer id, String name, String address) {
         super(id, name);
         this.address = address;
     }
 
-    public Restaurant(Integer id, String name, @Nullable String address, boolean enabled, List<MenuItem> menuItems) {
+    public Restaurant(Integer id, String name, String address, boolean enabled, List<MenuItem> menuItems) {
         super(id, name);
         this.address = address;
         this.enabled = enabled;

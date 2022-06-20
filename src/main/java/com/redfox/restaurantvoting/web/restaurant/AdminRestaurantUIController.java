@@ -20,7 +20,7 @@ public class AdminRestaurantUIController extends AbstractRestaurantController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> get(@PathVariable int id) {
-        return ResponseEntity.of(super.findById(id));
+        return ResponseEntity.of(super.findByRestaurant(id));
     }
 
     @Override
