@@ -21,7 +21,7 @@ $(function () {
             },
             {
                 "data": "enabled",
-                "render": renderEnableBtn(data, type, row, false)
+                "render": renderEnableBtn
             },
             {
                 "data": "address"

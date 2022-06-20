@@ -28,7 +28,7 @@ $(function () {
             },
             {
                 "data": "enabled",
-                "render": renderEnableBtn(data, type, row, true)
+                "render": renderEnableBtns
 
             },
             {

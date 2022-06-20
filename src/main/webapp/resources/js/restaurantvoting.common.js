@@ -56,9 +56,16 @@ function enable(chkbox, id, isGroup) {
     });
 }
 
-function renderEnableBtn(data, type, row, isGroup) {
+function renderEnableBtn(data, type, row) {
     if (type === "display") {
-        return "<input type='checkbox' " + (data ? "checked" : "") + " onclick='enable($(this), " + row.id + ", " + isGroup + ");'/>";
+        return "<input type='checkbox' " + (data ? "checked" : "") + " onclick='enable($(this), " + row.id + ", " + false + ");'/>";
+    }
+    return data;
+}
+
+function renderEnableBtns(data, type, row) {
+    if (type === "display") {
+        return "<input type='checkbox' " + (data ? "checked" : "") + " onclick='enable($(this), " + row.id + ", " + true + ");'/>";
     }
     return data;
 }
