@@ -34,9 +34,12 @@ public abstract class AbstractUserController {
         binder.addValidators(emailValidator);
     }
 
+    @Transactional
     public Optional<User> findById(int id) {
-        log.info("get {}", id);
-        return repository.getExisted(id);
+        log.info("findById {}", id);
+        Optional<User> user = repository.getExisted(id);
+        user.ifPresent(u -> repository.checkAvailable(id));
+        return user;
     }
 
     @CacheEvict(allEntries = true)

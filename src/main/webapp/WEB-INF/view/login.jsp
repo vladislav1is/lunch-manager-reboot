@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
-
 <html>
 <head>
     <jsp:include page="fragments/metadata.jsp"/>
@@ -13,7 +12,7 @@
 <div class="jumbotron py-0">
     <div class="container">
         <c:if test="${param.error}">
-            <div class="error"><spring:message code="login.error"/></div>
+            <div class="error">${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</div>
         </c:if>
         <c:if test="${param.logout}">
             <div class="message"><spring:message code="login.success"/></div>

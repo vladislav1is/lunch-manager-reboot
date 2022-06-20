@@ -1,9 +1,6 @@
 package com.redfox.restaurantvoting.web;
 
-import com.redfox.restaurantvoting.error.AppException;
-import com.redfox.restaurantvoting.error.DataConflictException;
-import com.redfox.restaurantvoting.error.ErrorType;
-import com.redfox.restaurantvoting.error.RestaurantConstraintViolationException;
+import com.redfox.restaurantvoting.error.*;
 import com.redfox.restaurantvoting.util.validation.Validations;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +57,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> dataConflictException(WebRequest request, DataConflictException exception) {
         log.error("DataConflictException: {}", exception.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DATA_ERROR);
+    }
+
+    @ExceptionHandler(DataDisabledException.class)
+    public ResponseEntity<?> dataConflictException(WebRequest request, DataDisabledException exception) {
+        log.error("DataDisabledException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DATA_DISABLED);
     }
 
     @ExceptionHandler(RestaurantConstraintViolationException.class)

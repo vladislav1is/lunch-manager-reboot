@@ -60,7 +60,7 @@ public class AdminUserController extends AbstractUserController {
     @GetMapping("/by-email")
     public ResponseEntity<User> getByEmail(@RequestParam String email) {
         log.info("getByEmail {}", email);
-        return ResponseEntity.of(repository.getExistedEmail(email));
+        return ResponseEntity.of(repository.getExistedByEmail(email));
     }
 
     @Override
