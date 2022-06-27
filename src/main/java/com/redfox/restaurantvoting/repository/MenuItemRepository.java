@@ -26,7 +26,7 @@ public interface MenuItemRepository extends BaseRepository<MenuItem> {
             SELECT mi from MenuItem mi
             WHERE mi.restaurant.id=:restaurantId AND mi.actualDate=:date AND mi.dishRef.name=:name
             """)
-    Optional<MenuItem> findByNameDateAndRestaurantId(int restaurantId, LocalDate date, String name);
+    Optional<MenuItem> findByRestaurantIdWithDishNameAndDate(int restaurantId, String name, LocalDate date);
 
     @Query("""
             SELECT mi from MenuItem mi

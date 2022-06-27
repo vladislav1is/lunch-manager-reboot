@@ -1,10 +1,10 @@
-const dishAjaxUrl = "profile/restaurants/" + restaurantId + "/menu-items/";
+const menuItemAjaxUrl = "profile/restaurants/" + restaurantId + "/menu-items/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: dishAjaxUrl,
+    ajaxUrl: menuItemAjaxUrl,
     updateTable: function () {
-        $.get(dishAjaxUrl, updateTableByData);
+        $.get(menuItemAjaxUrl, updateTableByData);
     }
 }
 

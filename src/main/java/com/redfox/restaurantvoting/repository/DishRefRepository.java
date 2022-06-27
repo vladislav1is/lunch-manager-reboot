@@ -1,6 +1,6 @@
 package com.redfox.restaurantvoting.repository;
 
-import com.redfox.restaurantvoting.error.DishRefConstraintViolationException;
+import com.redfox.restaurantvoting.error.restaurant.DishRefConstraintViolationException;
 import com.redfox.restaurantvoting.error.DataDisabledException;
 import com.redfox.restaurantvoting.model.DishRef;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +16,9 @@ public interface DishRefRepository extends BaseRepository<DishRef> {
 
     @Query("SELECT d FROM DishRef d WHERE d.id=:id AND d.restaurant.id=:restaurantId")
     Optional<DishRef> findByRestaurantIdAndDishRef(int restaurantId, int id);
+
+    @Query("SELECT d FROM DishRef d WHERE d.name=:name AND d.restaurant.id=:restaurantId")
+    Optional<DishRef> findByNameAndRestaurantId(String name, int restaurantId);
 
     @Query("SELECT d FROM DishRef d WHERE d.restaurant.id=:restaurantId ORDER BY d.name ASC")
     List<DishRef> getAllByRestaurantId(int restaurantId);

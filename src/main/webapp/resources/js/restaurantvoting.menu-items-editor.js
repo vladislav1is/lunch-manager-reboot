@@ -1,12 +1,12 @@
-const dishAjaxUrl = "admin/restaurants/" + restaurantId + "/menu-items/";
+const menuItemAjaxUrl = "admin/restaurants/" + restaurantId + "/menu-items/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: dishAjaxUrl,
+    ajaxUrl: menuItemAjaxUrl,
     updateTable: function () {
         $.ajax({
             type: "GET",
-            url: dishAjaxUrl + "filter",
+            url: menuItemAjaxUrl + "filter",
             data: $("#filter").serialize()
         }).done(updateTableByData);
     }
@@ -14,7 +14,7 @@ const ctx = {
 
 function clearFilter() {
     $("#filter")[0].reset();
-    $.get(dishAjaxUrl, updateTableByData);
+    $.get(menuItemAjaxUrl, updateTableByData);
 }
 
 $(function () {

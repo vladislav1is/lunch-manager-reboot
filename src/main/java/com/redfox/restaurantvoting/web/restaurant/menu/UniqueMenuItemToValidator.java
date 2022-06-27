@@ -35,7 +35,7 @@ public class UniqueMenuItemToValidator implements org.springframework.validation
         String name = menuItem.getName().strip();
         String date = menuItem.getActualDate().strip();
         if (StringUtils.hasText(name) && StringUtils.hasText(date)) {
-            repository.findByNameDateAndRestaurantId(restaurantId, LocalDate.parse(date), name)
+            repository.findByRestaurantIdWithDishNameAndDate(restaurantId, name, LocalDate.parse(date))
                     .ifPresent(dbMenuItem -> {
                         if (request.getMethod().equals("PUT") || request.getMethod().equals("POST")) {  // UPDATE
                             int dbId = dbMenuItem.id();

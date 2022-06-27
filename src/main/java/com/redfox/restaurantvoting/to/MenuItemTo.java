@@ -30,11 +30,11 @@ public class MenuItemTo extends NamedTo implements HasMenuItemToConstraint {
 
     @NotBlank
     @JsonView(View.MenuItemWithoutEnabled.class)
-    String actualDate;
+    private String actualDate;
 
     @Range(min = 1, max = 1000_000)
     @JsonView(View.MenuItemWithoutEnabled.class)
-    int price;
+    private int price;
 
-    boolean enabled = true;
+    private boolean enabled = true;
 }

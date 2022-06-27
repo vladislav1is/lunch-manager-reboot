@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -27,13 +28,13 @@ public class MenuItemService {
         Restaurant restaurant = restaurantRepository.getById(restaurantId);
         DishRef dishRef;
         if (named) {
-            DishRef created = menuItem.getDishRef();
             if (menuItem.getId() != null) {
-                MenuItem dbMenuItem = menuItemRepository.checkBelongWithDish(restaurantId, menuItem.id());
-                Integer dbDishRefId = dbMenuItem.getDishRef().getId();
-                created.setId(dbDishRefId);
+                menuItemRepository.checkBelong(restaurantId, menuItem.id());
             }
-            dishRef = dishRefRepository.save(new DishRef(created.getId(), created.getName().strip(), created.getPrice(), restaurant));
+            DishRef createdDish = menuItem.getDishRef();
+            Optional<DishRef> dbDish = dishRefRepository.findByNameAndRestaurantId(createdDish.getName(), restaurantId);
+            dbDish.ifPresent(ref -> createdDish.setId(ref.id()));
+            dishRef = dishRefRepository.save(new DishRef(createdDish.getId(), createdDish.getName().strip(), createdDish.getPrice(), restaurant));
         } else {
             int dishRefId = menuItem.getDishRefId();
             dishRefRepository.getExisted(dishRefId);
