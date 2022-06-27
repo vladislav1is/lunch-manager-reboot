@@ -1,4 +1,4 @@
-const restaurantAjaxUrl = "profile/restaurants/";
+const restaurantAjaxUrl = "profile/restaurants/" + restaurantId + "/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
@@ -23,9 +23,12 @@ $(function () {
                 "data": "address"
             },
             {
-                "orderable": false,
-                "defaultContent": "",
-                "render": renderVoteBtn
+                "data": function (data, type, row) {
+                    if (type === "display") {
+                        return '<div id="votesCount">' + votesCount + '</div>'
+                    }
+                    return votesCount;
+                }
             }
         ],
         "order":
@@ -34,12 +37,6 @@ $(function () {
                     0,
                     "asc"
                 ]
-            ],
-        "createdRow":
-            function (row, data) {
-                if (Object.is(data.id, userVote.restaurantId)) {
-                    $(row).attr("class", "data-voted font-weight-bold")
-                }
-            }
+            ]
     });
 });

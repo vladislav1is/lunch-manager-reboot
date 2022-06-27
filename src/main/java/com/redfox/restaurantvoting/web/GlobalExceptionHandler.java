@@ -1,6 +1,11 @@
 package com.redfox.restaurantvoting.web;
 
 import com.redfox.restaurantvoting.error.*;
+import com.redfox.restaurantvoting.error.restaurant.DishRefConstraintViolationException;
+import com.redfox.restaurantvoting.error.restaurant.RestaurantConstraintViolationException;
+import com.redfox.restaurantvoting.error.vote.AlreadyVotedException;
+import com.redfox.restaurantvoting.error.vote.DeadlineException;
+import com.redfox.restaurantvoting.error.vote.NotVotedException;
 import com.redfox.restaurantvoting.util.validation.Validations;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,9 +67,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DataDisabledException.class)
-    public ResponseEntity<?> dataConflictException(WebRequest request, DataDisabledException exception) {
+    public ResponseEntity<?> dataDisabledException(WebRequest request, DataDisabledException exception) {
         log.error("DataDisabledException: {}", exception.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DATA_DISABLED);
+    }
+
+    @ExceptionHandler(DeadlineException.class)
+    public ResponseEntity<?> deadlineException(WebRequest request, DeadlineException exception) {
+        log.error("DeadlineException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DEADLINE);
+    }
+
+    @ExceptionHandler(NotVotedException.class)
+    public ResponseEntity<?> notVotedException(WebRequest request, NotVotedException exception) {
+        log.error("NotVotedException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.NOT_VOTED);
+    }
+
+    @ExceptionHandler(AlreadyVotedException.class)
+    public ResponseEntity<?> alreadyVotedException(WebRequest request, AlreadyVotedException exception) {
+        log.error("AlreadyVotedException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.ALREADY_VOTED);
     }
 
     @ExceptionHandler(RestaurantConstraintViolationException.class)

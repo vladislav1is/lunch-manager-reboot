@@ -18,9 +18,9 @@ public interface VoteRepository extends BaseRepository<Vote> {
     void deleteByRestaurantId(int restaurantId);
 
     @Query("SELECT v FROM Vote v WHERE v.actualDate=:date AND v.user.id=:userId")
-    Optional<Vote> getByDateAndUserId(LocalDate date, int userId);
+    Optional<Vote> findByDateAndUserId(LocalDate date, int userId);
 
-    @Query("SELECT v FROM Vote v WHERE v.user.id=:userId")
+    @Query("SELECT v FROM Vote v WHERE v.user.id=:userId ORDER BY v.actualDate DESC")
     List<Vote> getAllByUserId(int userId);
 
     @Query("SELECT COUNT(v) FROM Vote v WHERE v.actualDate=:date AND v.restaurantId=:restaurantId")

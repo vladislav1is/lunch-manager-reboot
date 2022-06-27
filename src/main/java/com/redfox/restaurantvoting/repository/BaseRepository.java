@@ -25,9 +25,9 @@ public interface BaseRepository<T> extends JpaRepository<T, Integer> {
         checkModification(deletedCount == 0, id);
     }
 
-    default Optional<T> getExisted(int id) {
+    default T getExisted(int id) {
         Optional<T> bean = findById(id);
         checkModification(bean.isEmpty(), id);
-        return bean;
+        return bean.get();
     }
 }

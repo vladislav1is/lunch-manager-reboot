@@ -8,6 +8,14 @@
     <jsp:include page="fragments/datatables.jsp"/>
 </head>
 <body>
+<script type="text/javascript" defer>
+    let userVote = {
+        restaurantId: null
+    };
+    <c:if test="${userVote != null}">
+        userVote.restaurantId = ${userVote.restaurantId};
+    </c:if>
+</script>
 <script src="resources/js/restaurantvoting.common.js" defer></script>
 <script src="resources/js/restaurantvoting.restaurants.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
@@ -20,6 +28,7 @@
                 <th><spring:message code="restaurant.name"/></th>
                 <th><spring:message code="restaurant.menu"/></th>
                 <th><spring:message code="restaurant.address"/></th>
+                <th><spring:message code="restaurant.visitors"/></th>
             </tr>
             </thead>
         </table>

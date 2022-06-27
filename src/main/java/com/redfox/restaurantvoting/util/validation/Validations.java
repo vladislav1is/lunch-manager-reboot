@@ -2,12 +2,15 @@ package com.redfox.restaurantvoting.util.validation;
 
 import com.redfox.restaurantvoting.HasId;
 import com.redfox.restaurantvoting.error.*;
+import com.redfox.restaurantvoting.error.restaurant.RestaurantConstraintViolationException;
+import com.redfox.restaurantvoting.error.vote.DeadlineException;
 import lombok.experimental.UtilityClass;
 import org.slf4j.Logger;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalTime;
 
 @UtilityClass
 public class Validations {
@@ -36,6 +39,12 @@ public class Validations {
     public static void checkModification(boolean isEmpty, String email) {
         if (isEmpty) {
             throw new NotFoundException("Entity with email=" + email + " not found");
+        }
+    }
+
+    public static void checkDeadline(LocalTime now, LocalTime deadline) {
+        if (now.isAfter(deadline)) {
+            throw new DeadlineException("Deadline for change vote has passed");
         }
     }
 

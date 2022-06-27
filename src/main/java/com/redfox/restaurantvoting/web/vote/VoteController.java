@@ -1,6 +1,5 @@
 package com.redfox.restaurantvoting.web.vote;
 
-import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.model.Vote;
 import com.redfox.restaurantvoting.repository.VoteRepository;
 import com.redfox.restaurantvoting.service.VoteService;
@@ -44,18 +43,17 @@ public class VoteController {
     @GetMapping("/by-date")
     public ResponseEntity<Vote> getOwnByDate(@Nullable @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         int authId = SecurityUtil.authId();
-        date = atDayOrNow(date);
-        log.info("getOwnByDate for userId={} and {}", authId, date);
-        return ResponseEntity.of(repository.getByDateAndUserId(date, authId));
+        LocalDate localDate = atDayOrNow(date);
+        log.info("getOwnByDate for userId={} and {}", authId, localDate);
+        return ResponseEntity.of(repository.findByDateAndUserId(localDate, authId));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)  // Needed for CSRF protection
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     // https://github.com/springdoc/springdoc-openapi/issues/657#issuecomment-625891941
     public ResponseEntity<Vote> voteToday(@RequestParam int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
-        User user = authUser.getUser();
-        log.info("voteToday for userId={}", user.id());
-        Vote created = service.createToday(user, restaurantId);
+        log.info("voteToday for userId={} with restaurantId={}", authUser.id(), restaurantId);
+        Vote created = service.createToday(authUser.getUser(), restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/by-date?date={date}")
                 .buildAndExpand(created.getActualDate()).toUri();
@@ -66,21 +64,15 @@ public class VoteController {
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void revoteToday(@RequestParam int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
-        User user = authUser.getUser();
-        log.info("re-voteToday for userId={}", user.id());
-        service.updateToday(user, restaurantId, false);
+        log.info("re-voteToday for userId={} with restaurantId={}", authUser.id(), restaurantId);
+        service.updateToday(authUser.getUser(), restaurantId);
+
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteToday(@AuthenticationPrincipal AuthUser authUser) {
-        User user = authUser.getUser();
-        log.info("deleteToday for userId={}", user.id());
-        service.updateToday(user, 0, true);
-    }
-
-    @GetMapping("/count-by")
-    public int countByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam int restaurantId) {
-        return repository.countByDateAndRestaurantId(atDayOrNow(date), restaurantId);
+        log.info("deleteToday for userId={}", authUser.id());
+        service.deleteVote(authUser.getUser());
     }
 }

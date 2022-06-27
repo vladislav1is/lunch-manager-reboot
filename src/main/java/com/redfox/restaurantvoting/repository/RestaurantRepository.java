@@ -53,7 +53,7 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
 
     default void checkAvailable(int id) {
         if (!getById(id).isEnabled()) {
-            throw new DataDisabledException("Restaurant " + id + " is unavailable");
+            throw new DataDisabledException("Restaurant with id=" + id + " is unavailable");
         }
     }
 }

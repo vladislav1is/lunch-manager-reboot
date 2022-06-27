@@ -22,9 +22,9 @@
         </c:if>
         <security:authorize access="isAnonymous()">
             <div class="pt-2">
-                <a class="btn btn-lg btn-secondary mt-2" href="register">
+                <button type="button" class="btn btn-lg btn-secondary mt-2" onclick="window.location.href='register'">
                         <spring:message code="profile.register"/>&raquo;
-                </a>
+                </button>
                 <button type="submit" class="btn btn-lg btn-primary mt-2" onclick="login('user@yandex.ru', 'password')">
                     <spring:message code="app.login"/> User
                 </button>

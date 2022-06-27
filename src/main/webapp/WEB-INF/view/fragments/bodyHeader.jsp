@@ -1,4 +1,3 @@
-<%--@elvariable id="userTo" type="com.redfox.restaurantvoting.to.UserTo"--%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>

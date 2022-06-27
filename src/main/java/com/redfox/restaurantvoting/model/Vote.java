@@ -1,6 +1,8 @@
 package com.redfox.restaurantvoting.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.redfox.restaurantvoting.util.DateTimeUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,10 +33,12 @@ public class Vote extends BaseEntity {
 
     @Column(name = "actual_date", nullable = false)
     @NotNull
+    @JsonFormat(pattern= DateTimeUtil.DATE_PATTERN)
     private LocalDate actualDate;
 
     @Column(name = "actual_time", nullable = false)
     @NotNull
+    @JsonFormat(pattern= DateTimeUtil.TIME_PATTERN)
     private LocalTime actualTime;
 
     @Column(name = "restaurant_id")

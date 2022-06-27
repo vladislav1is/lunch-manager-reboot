@@ -7,7 +7,10 @@ import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.DishRefRepository;
 import com.redfox.restaurantvoting.repository.RestaurantRepository;
 import com.redfox.restaurantvoting.repository.UserRepository;
+import com.redfox.restaurantvoting.repository.VoteRepository;
 import com.redfox.restaurantvoting.to.RestaurantWithMenu;
+import com.redfox.restaurantvoting.to.RestaurantWithVisitors;
+import com.redfox.restaurantvoting.util.DateTimeUtil;
 import com.redfox.restaurantvoting.util.Restaurants;
 import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import com.redfox.restaurantvoting.web.SecurityUtil;
@@ -17,14 +20,18 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.redfox.restaurantvoting.util.DateTimeUtil.atDayOrNow;
 import static com.redfox.restaurantvoting.util.validation.Validations.assureIdConsistent;
 import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 
@@ -32,7 +39,7 @@ import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 public abstract class AbstractRestaurantController {
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
+    protected RestaurantRepository restaurantRepository;
     @Autowired
     protected RestaurantMapper restaurantMapper;
 
@@ -43,6 +50,9 @@ public abstract class AbstractRestaurantController {
     private DishRefRepository dishRefRepository;
 
     @Autowired
+    private VoteRepository voteRepository;
+
+    @Autowired
     private UniqueRestaurantValidator nameValidator;
 
     @InitBinder
@@ -50,18 +60,13 @@ public abstract class AbstractRestaurantController {
         binder.addValidators(nameValidator);
     }
 
-    @Transactional
     public Optional<Restaurant> findByRestaurant(int id) {
-        log.info("findById {}", id);
-        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
-        restaurant.ifPresent(r -> restaurantRepository.checkAvailable(r.id()));
-        return restaurant;
+        log.info("findByRestaurant {}", id);
+        return restaurantRepository.findById(id);
     }
 
-    @Transactional
     public Optional<Restaurant> findWithMenuByRestaurantForToday(int id) {
-        log.info("getWithMenuByRestaurantForToday {}", id);
-        restaurantRepository.checkAvailable(id);
+        log.info("findWithMenuByRestaurantForToday {}", id);
         return restaurantRepository.findWithMenuByRestaurantAndDate(id, LocalDate.now());
     }
 
@@ -136,5 +141,15 @@ public abstract class AbstractRestaurantController {
         log.info(enabled ? "enable {}" : "disable {}", id);
         Restaurant restaurant = restaurantRepository.getById(id);
         restaurant.setEnabled(enabled);
+    }
+
+    @Transactional
+    public RestaurantWithVisitors findWithVisitorsByRestaurantAndDate(@RequestParam int restaurantId, @RequestParam @Nullable @DateTimeFormat(pattern = DateTimeUtil.DATE_PATTERN) LocalDate date) {
+        LocalDate localDate = atDayOrNow(date);
+        log.info("findWithVisitorsByRestaurantAndDate for restaurantId={} and date={}", restaurantId, localDate);
+        Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
+        restaurantRepository.checkAvailable(restaurantId);
+        int visitorsCount = voteRepository.countByDateAndRestaurantId(localDate, restaurantId);
+        return new RestaurantWithVisitors(restaurant.id(), restaurant.getName(), restaurant.getAddress(), visitorsCount);
     }
 }

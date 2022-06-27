@@ -136,6 +136,44 @@ function saveMenuItem() {
     save();
 }
 
+function vote() {
+    $.ajax({
+        type: "POST",
+        url: ctx.ajaxUrl + "vote"
+    }).done(function () {
+        updateVisitors();
+        successNoty("common.saved");
+    });
+}
+
+function updateVisitors() {
+    $.ajax({
+        type: "GET",
+        url: ctx.ajaxUrl + "count-visitors",
+        data: {
+            "restaurantId": restaurantId
+        },
+        success: function (data) {
+            $('#votesCount').text(data.visitors);
+        },
+    });
+}
+
+function deleteVote() {
+    if (confirm(i18n['common.confirm'])) {
+        $.ajax({
+            type: "DELETE",
+            url: "profile/restaurants/vote",
+            data: {
+                "deleteVote": true
+            }
+        }).done(function () {
+            updateVisitors();
+            successNoty("common.deleted");
+        });
+    }
+}
+
 function renderEditBtn(data, type, row) {
     if (type === "display") {
         return "<a onclick='updateRow(" + row.id + ");'><span class='fa text-dark fa-pencil'></span></a>";
@@ -159,6 +197,15 @@ function renderMenuBtn(data, type, row) {
     if (type === "display") {
         return "<button type='button' onclick=\"window.location.href='restaurants/" + row.id + "/menu-items'\"\n" +
             " class='btn btn-sm btn-secondary'>" + i18n["common.view"] + "</button>";
+    }
+}
+
+function renderVoteBtn(data, type, row) {
+    if (type === "display") {
+        return "<button type='button' onclick=\"window.location.href='restaurants/" + row.id + "/vote'\"\n" +
+            " class='btn btn-sm btn-secondary'>" +
+            "<span class='fa text-light fa-plus'></span>&nbsp&nbsp<span class='fa text-white-50 fa-users'></span>" +
+            "</button>";
     }
 }
 

@@ -12,11 +12,11 @@ import org.springdoc.core.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static com.redfox.restaurantvoting.util.DateTimeUtil.DATE_TIME_FORMATTER;
-import static com.redfox.restaurantvoting.util.DateTimeUtil.TIME_FORMATTER;
+import static com.redfox.restaurantvoting.util.DateTimeUtil.*;
 
 @Configuration
 @SecurityScheme(
@@ -41,6 +41,8 @@ import static com.redfox.restaurantvoting.util.DateTimeUtil.TIME_FORMATTER;
 public class OpenApiConfig {
     // https://ru.stackoverflow.com/a/1276885/209226
     static {
+        var dateSchema = new Schema<LocalDate>();
+        dateSchema.example(LocalDate.now().format(DATE_FORMATTER));
         var timeSchema = new Schema<LocalTime>();
         timeSchema.example(LocalTime.now().format(TIME_FORMATTER));
         SpringDocUtils.getConfig().replaceWithSchema(LocalTime.class, timeSchema);
