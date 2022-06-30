@@ -1,5 +1,6 @@
 package com.redfox.restaurantvoting.web.user;
 
+import com.redfox.restaurantvoting.model.Role;
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.UserRepository;
 import com.redfox.restaurantvoting.util.Users;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,12 +36,9 @@ public abstract class AbstractUserController {
         binder.addValidators(emailValidator);
     }
 
-    @Transactional
     public Optional<User> findById(int id) {
         log.info("findById {}", id);
-        Optional<User> user = repository.getExisted(id);
-        user.ifPresent(u -> repository.checkAvailable(id));
-        return user;
+        return repository.findById(id);
     }
 
     @CacheEvict(allEntries = true)
@@ -67,6 +66,9 @@ public abstract class AbstractUserController {
     public void update(User user, int id) {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
+        if (!user.hasRole(Role.R_ADMIN)) {
+            user.setAdminRestaurants(Collections.emptySet());
+        }
         prepareAndSave(user);
     }
 

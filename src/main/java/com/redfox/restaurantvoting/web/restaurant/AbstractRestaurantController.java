@@ -70,7 +70,6 @@ public abstract class AbstractRestaurantController {
         return restaurantRepository.findWithMenuByRestaurantAndDate(id, LocalDate.now());
     }
 
-    @Cacheable("restaurants")
     public List<Restaurant> getAll() {
         log.info("getAll");
         User user = SecurityUtil.authUser();
@@ -96,7 +95,6 @@ public abstract class AbstractRestaurantController {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "restaurants", allEntries = true),
             @CacheEvict(value = "allEnabledRestaurants", allEntries = true),
             @CacheEvict(value = "allRestaurantsWithMenu", allEntries = true),
             @CacheEvict(value = "restaurantWithMenu", key = "#id")
@@ -132,7 +130,6 @@ public abstract class AbstractRestaurantController {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "restaurants", allEntries = true),
             @CacheEvict(value = "allEnabledRestaurants", allEntries = true),
             @CacheEvict(value = "allRestaurantsWithMenu", allEntries = true),
             @CacheEvict(value = "restaurantWithMenu", key = "#id")

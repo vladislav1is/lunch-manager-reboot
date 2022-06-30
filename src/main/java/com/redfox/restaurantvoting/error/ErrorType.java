@@ -11,7 +11,8 @@ public enum ErrorType {
     RESTAURANT_CONSTRAINT_VIOLATION("error.restaurantConstraintViolation"),
     DISH_REF_CONSTRAINT_VIOLATION("error.dishRefConstraintViolation"),
     VALIDATION_ERROR("error.validationError"),
-    WRONG_REQUEST("error.wrongRequest");
+    WRONG_REQUEST("error.wrongRequest"),
+    FORBIDDEN("error.forbidden");
 
     private final String errorCode;
 

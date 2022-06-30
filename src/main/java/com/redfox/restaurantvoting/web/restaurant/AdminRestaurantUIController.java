@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = AdminRestaurantUIController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminRestaurantUIController extends AbstractRestaurantController {
-    static final String REST_URL = "/admin/restaurants";
+    public static final String REST_URL = "/admin/restaurants";
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> get(@PathVariable int id) {
@@ -39,7 +39,6 @@ public class AdminRestaurantUIController extends AbstractRestaurantController {
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Caching(evict = {
-            @CacheEvict(value = "restaurants", allEntries = true),
             @CacheEvict(value = "allEnabledRestaurants", allEntries = true),
             @CacheEvict(value = "allRestaurantsWithMenu", allEntries = true, condition = "#restaurant.isNew() == false"),
             @CacheEvict(value = "restaurantWithMenu", key = "#restaurant.id", condition = "#restaurant.isNew() == false")

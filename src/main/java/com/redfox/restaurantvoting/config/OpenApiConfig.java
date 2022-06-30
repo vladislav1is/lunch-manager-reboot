@@ -43,6 +43,7 @@ public class OpenApiConfig {
     static {
         var dateSchema = new Schema<LocalDate>();
         dateSchema.example(LocalDate.now().format(DATE_FORMATTER));
+        SpringDocUtils.getConfig().replaceWithSchema(LocalDate.class, dateSchema);
         var timeSchema = new Schema<LocalTime>();
         timeSchema.example(LocalTime.now().format(TIME_FORMATTER));
         SpringDocUtils.getConfig().replaceWithSchema(LocalTime.class, timeSchema);

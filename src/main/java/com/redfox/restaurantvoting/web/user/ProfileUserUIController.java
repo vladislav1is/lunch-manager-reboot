@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,7 +39,7 @@ public class ProfileUserUIController extends AbstractUserController {
     }
 
     @PostMapping("/profile")
-    @CachePut(key = "#authUser.username")
+    @CacheEvict(allEntries = true)
     public String update(@Valid UserTo userTo, BindingResult result, SessionStatus status, @AuthenticationPrincipal AuthUser authUser) {
         if (result.hasErrors()) {
             return "profile";

@@ -2,7 +2,7 @@ package com.redfox.restaurantvoting.web.restaurant.menu;
 
 import com.redfox.restaurantvoting.model.MenuItem;
 import com.redfox.restaurantvoting.util.DateTimeUtil;
-import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
+import com.redfox.restaurantvoting.web.restaurant.AdminRestaurantController;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
@@ -26,7 +26,7 @@ import static com.redfox.restaurantvoting.util.DateTimeUtil.*;
 @RequestMapping(value = AdminMenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class AdminMenuItemController extends AbstractMenuItemController {
-    static final String REST_URL = AdminRestaurantsUtil.REST_URL + "/{restaurantId}/menu-items";
+    static final String REST_URL = AdminRestaurantController.REST_URL + "/{restaurantId}/menu-items";
 
     private final UniqueMenuItemValidator menuValidator;
 

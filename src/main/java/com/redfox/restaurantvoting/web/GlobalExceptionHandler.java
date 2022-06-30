@@ -1,6 +1,9 @@
 package com.redfox.restaurantvoting.web;
 
-import com.redfox.restaurantvoting.error.*;
+import com.redfox.restaurantvoting.error.AppException;
+import com.redfox.restaurantvoting.error.DataConflictException;
+import com.redfox.restaurantvoting.error.DataDisabledException;
+import com.redfox.restaurantvoting.error.ErrorType;
 import com.redfox.restaurantvoting.error.restaurant.DishRefConstraintViolationException;
 import com.redfox.restaurantvoting.error.restaurant.RestaurantConstraintViolationException;
 import com.redfox.restaurantvoting.error.vote.AlreadyVotedException;
@@ -19,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -106,6 +110,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> conflict(WebRequest request, DataIntegrityViolationException exception) {
         log.error("DataIntegrityViolationException: {}", exception.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DATA_ERROR);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> accessDeniedException(WebRequest request, AccessDeniedException exception) {
+        log.error("AccessDeniedException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.FORBIDDEN, ErrorType.FORBIDDEN);
     }
 
     @NonNull

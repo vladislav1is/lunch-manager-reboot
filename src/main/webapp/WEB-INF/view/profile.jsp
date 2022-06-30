@@ -19,7 +19,6 @@
                 <form:form class="form-group" modelAttribute="userTo" method="post"
                            action="${isAnonymous ? 'register' : 'profile'}" charset="utf-8" accept-charset="UTF-8">
 
-                    <form:hidden path="id"/>
                     <restaurantvoting:inputField labelCode="user.name" name="name"/>
                     <restaurantvoting:inputField labelCode="user.email" name="email"/>
                     <restaurantvoting:inputField labelCode="user.password" name="password" inputType="password"/>

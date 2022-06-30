@@ -43,6 +43,7 @@
             <div class="modal-body">
                 <form id="detailsForm">
                     <input type="hidden" id="id" name="id">
+                    <input type="hidden" id="adminRestaurants" name="adminRestaurants">
                     <div class="form-group">
                         <label for="name" class="col-form-label"><spring:message code="user.name"/></label>
                         <input type="text" class="form-control" id="name" name="name"

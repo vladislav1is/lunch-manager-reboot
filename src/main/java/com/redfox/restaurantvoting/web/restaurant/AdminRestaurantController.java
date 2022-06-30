@@ -13,11 +13,12 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil.REST_URL;
+import static com.redfox.restaurantvoting.web.restaurant.AdminRestaurantController.REST_URL;
 
 @RestController
 @RequestMapping(value = REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminRestaurantController extends AbstractRestaurantController {
+    public static final String REST_URL = "/api/admin/restaurants";
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> get(@PathVariable int id) {
@@ -39,7 +40,6 @@ public class AdminRestaurantController extends AbstractRestaurantController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Caching(evict = {
-            @CacheEvict(value = "restaurants", allEntries = true),
             @CacheEvict(value = "allEnabledRestaurants", allEntries = true),
     })
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
@@ -54,7 +54,6 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Caching(evict = {
-            @CacheEvict(value = "restaurants", allEntries = true),
             @CacheEvict(value = "allEnabledRestaurants", allEntries = true),
             @CacheEvict(value = "allRestaurantsWithMenu", allEntries = true),
             @CacheEvict(value = "restaurantWithMenu", key = "#id")

@@ -1,7 +1,5 @@
 package com.redfox.restaurantvoting.web.user;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.model.User;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.cache.annotation.CacheEvict;
@@ -20,14 +18,12 @@ public class AdminUserUIController extends AbstractUserController {
     static final String REST_URL = "/admin/users";
 
     @GetMapping("/{id}")
-    @JsonView(View.UserWithoutRestaurants.class)
     public ResponseEntity<User> get(@PathVariable int id) {
         return ResponseEntity.of(super.findById(id));
     }
 
     @Override
     @GetMapping
-    @JsonView(View.UserWithoutRestaurants.class)
     public List<User> getAll() {
         return super.getAll();
     }

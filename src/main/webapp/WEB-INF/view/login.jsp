@@ -31,6 +31,9 @@
                 <button type="submit" class="btn btn-lg btn-primary mt-2" onclick="login('admin@gmail.com', 'admin')">
                     <spring:message code="app.login"/> Admin
                 </button>
+                <button type="submit" class="btn btn-lg btn-primary mt-2" onclick="login('r_admin@gmail.com', 'radmin')">
+                    <spring:message code="app.login"/> Manager
+                </button>
             </div>
         </security:authorize>
         <div class="lead py-4">

@@ -25,12 +25,14 @@
                                     <button type="button" onclick="location.href='restaurants';" class="btn btn-secondary">
                                         <spring:message code="restaurant.title"/>
                                     </button>
-                                    <security:authorize access="hasRole('ADMIN')">
+                                    <security:authorize access="hasAnyRole('ADMIN', 'R_ADMIN')">
                                         <button type="button" onclick="location.href='restaurants/editor';"
                                                 class="btn btn-secondary">
                                             <spring:message code="app.editor"/>
                                         </button>
-                                        <button type="button" onclick="location.href='users';" class="btn btn-secondary">
+                                    </security:authorize>
+                                    <security:authorize access="hasRole('ADMIN')">
+                                    <button type="button" onclick="location.href='users';" class="btn btn-secondary">
                                             <spring:message code="user.title"/>
                                         </button>
                                     </security:authorize>

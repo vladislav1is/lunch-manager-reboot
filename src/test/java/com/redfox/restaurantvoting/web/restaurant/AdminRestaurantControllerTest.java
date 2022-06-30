@@ -3,7 +3,6 @@ package com.redfox.restaurantvoting.web.restaurant;
 import com.redfox.restaurantvoting.model.Restaurant;
 import com.redfox.restaurantvoting.repository.*;
 import com.redfox.restaurantvoting.util.JsonUtil;
-import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import com.redfox.restaurantvoting.web.AbstractControllerTest;
 import com.redfox.restaurantvoting.web.user.UserTestData;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AdminRestaurantControllerTest extends AbstractControllerTest {
-    private static final String REST_URL = AdminRestaurantsUtil.REST_URL + '/';
+    private static final String REST_URL = AdminRestaurantController.REST_URL + '/';
 
     @Autowired
     private RestaurantRepository restaurantRepository;

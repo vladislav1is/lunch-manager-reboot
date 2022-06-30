@@ -3,7 +3,6 @@ package com.redfox.restaurantvoting.web.restaurant;
 import com.redfox.restaurantvoting.model.DishRef;
 import com.redfox.restaurantvoting.repository.DishRefRepository;
 import com.redfox.restaurantvoting.util.JsonUtil;
-import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import com.redfox.restaurantvoting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AdminDishRefControllerTest extends AbstractControllerTest {
-    private static final String REST_URL = AdminRestaurantsUtil.REST_URL + '/';
+    private static final String REST_URL = AdminRestaurantController.REST_URL + '/';
 
     @Autowired
     private DishRefRepository dishRefRepository;

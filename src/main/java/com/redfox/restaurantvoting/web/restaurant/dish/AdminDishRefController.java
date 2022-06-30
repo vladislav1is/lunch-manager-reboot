@@ -3,7 +3,7 @@ package com.redfox.restaurantvoting.web.restaurant.dish;
 import com.redfox.restaurantvoting.model.DishRef;
 import com.redfox.restaurantvoting.repository.DishRefRepository;
 import com.redfox.restaurantvoting.service.DishRefService;
-import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
+import com.redfox.restaurantvoting.web.restaurant.AdminRestaurantController;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,7 +27,7 @@ import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 @AllArgsConstructor
 @Slf4j
 public class AdminDishRefController {
-    static final String REST_URL =  AdminRestaurantsUtil.REST_URL + "/{restaurantId}/dish-ref";
+    static final String REST_URL =  AdminRestaurantController.REST_URL + "/{restaurantId}/dish-ref";
 
     private final DishRefRepository repository;
     private final DishRefService service;

@@ -1,8 +1,6 @@
 package com.redfox.restaurantvoting.web.restaurant.menu;
 
-import com.redfox.restaurantvoting.error.DataDisabledException;
 import com.redfox.restaurantvoting.mapper.MenuItemMapper;
-import com.redfox.restaurantvoting.model.DishRef;
 import com.redfox.restaurantvoting.model.MenuItem;
 import com.redfox.restaurantvoting.repository.DishRefRepository;
 import com.redfox.restaurantvoting.repository.MenuItemRepository;
@@ -45,21 +43,12 @@ public abstract class AbstractMenuItemController {
     @Transactional
     public Optional<MenuItem> find(int restaurantId, int id) {
         log.info("find {} for restaurantId={}", id, restaurantId);
-        Optional<MenuItem> menuItem = menuItemRepository.findByRestaurantIdAndMenuItem(restaurantId, id);
-        menuItem.ifPresent(mi -> dishRefRepository.checkAvailable(mi.getDishRef().id()));
-        return menuItem;
+        return menuItemRepository.findByRestaurantIdAndMenuItem(restaurantId, id);
     }
 
     public Optional<MenuItem> findWithDish(int restaurantId, int id) {
         log.info("findWithDish {} for restaurantId={}", id, restaurantId);
-        Optional<MenuItem> menuItem = menuItemRepository.findWithDishByRestaurantIdAndMenuItem(restaurantId, id);
-        menuItem.ifPresent(mi -> {
-            DishRef dishRef = mi.getDishRef();
-            if (!dishRef.isEnabled()) {
-                throw new DataDisabledException("DishRef " + id + " is unavailable");
-            }
-        });
-        return menuItem;
+        return menuItemRepository.findWithDishByRestaurantIdAndMenuItem(restaurantId, id);
     }
 
     public List<MenuItem> getAllByRestaurant(int restaurantId) {

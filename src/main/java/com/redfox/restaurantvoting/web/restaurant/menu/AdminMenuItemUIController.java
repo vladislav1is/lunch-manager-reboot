@@ -2,6 +2,7 @@ package com.redfox.restaurantvoting.web.restaurant.menu;
 
 import com.redfox.restaurantvoting.model.MenuItem;
 import com.redfox.restaurantvoting.to.MenuItemTo;
+import com.redfox.restaurantvoting.web.restaurant.AdminRestaurantUIController;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @RequestMapping(value = AdminMenuItemUIController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class AdminMenuItemUIController extends AbstractMenuItemController {
-    static final String REST_URL = "/admin/restaurants/{restaurantId}/menu-items";
+    static final String REST_URL = AdminRestaurantUIController.REST_URL + "/{restaurantId}/menu-items";
 
     private final UniqueMenuItemToValidator menuValidator;
 
