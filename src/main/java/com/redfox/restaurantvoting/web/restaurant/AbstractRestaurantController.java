@@ -1,16 +1,19 @@
 package com.redfox.restaurantvoting.web.restaurant;
 
-import com.redfox.restaurantvoting.mapper.RestaurantMapper;
+import com.redfox.restaurantvoting.mapper.RestaurantWithMenuMapper;
+import com.redfox.restaurantvoting.mapper.RestaurantWithVoteMapper;
 import com.redfox.restaurantvoting.model.Restaurant;
 import com.redfox.restaurantvoting.model.Role;
 import com.redfox.restaurantvoting.model.User;
+import com.redfox.restaurantvoting.model.Vote;
 import com.redfox.restaurantvoting.repository.DishRefRepository;
 import com.redfox.restaurantvoting.repository.RestaurantRepository;
 import com.redfox.restaurantvoting.repository.UserRepository;
 import com.redfox.restaurantvoting.repository.VoteRepository;
 import com.redfox.restaurantvoting.to.RestaurantWithMenu;
-import com.redfox.restaurantvoting.to.RestaurantWithVisitors;
+import com.redfox.restaurantvoting.to.RestaurantWithVote;
 import com.redfox.restaurantvoting.util.DateTimeUtil;
+import com.redfox.restaurantvoting.util.JsonUtil;
 import com.redfox.restaurantvoting.util.Restaurants;
 import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import com.redfox.restaurantvoting.web.SecurityUtil;
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.redfox.restaurantvoting.util.DateTimeUtil.atDayOrNow;
@@ -41,7 +45,9 @@ public abstract class AbstractRestaurantController {
     @Autowired
     protected RestaurantRepository restaurantRepository;
     @Autowired
-    protected RestaurantMapper restaurantMapper;
+    protected RestaurantWithMenuMapper restaurantWithMenuMapper;
+    @Autowired
+    protected RestaurantWithVoteMapper restaurantWithVoteMapper;
 
     @Autowired
     private UserRepository userRepository;
@@ -86,11 +92,26 @@ public abstract class AbstractRestaurantController {
         return restaurantRepository.getAllEnabled();
     }
 
+    @Transactional
+    public List<RestaurantWithVote> getAllEnabledWithUserVote(int userId) {
+        log.info("getAllEnabledWithUserVote");
+        List<Restaurant> restaurants = restaurantRepository.getAllEnabled();
+        Optional<Vote> vote = voteRepository.findByDateAndUserId(LocalDate.now(), userId);
+
+        List<RestaurantWithVote> restaurantWithVotes = restaurantWithVoteMapper.toToList(restaurants);
+        vote.ifPresent(value -> restaurantWithVotes.forEach(restaurantWithVote -> {
+            if (value.getRestaurantId() == restaurantWithVote.getId()) {
+                restaurantWithVote.setVoted(true);
+            }
+        }));
+        return restaurantWithVotes;
+    }
+
     @Cacheable("allRestaurantsWithMenu")
     public List<RestaurantWithMenu> getWithMenuForToday() {
         log.info("getWithMenuForToday");
         List<Restaurant> restaurants = restaurantRepository.getWithMenuByDate(LocalDate.now());
-        return restaurantMapper.toToList(restaurants);
+        return restaurantWithMenuMapper.toToList(restaurants);
     }
 
     @Transactional
@@ -102,6 +123,7 @@ public abstract class AbstractRestaurantController {
     public void delete(int id) {
         log.info("delete {}", id);
         dishRefRepository.checkUsage(id);
+        voteRepository.checkUsage(id);
         restaurantRepository.deleteExisted(id);
     }
 
@@ -137,16 +159,19 @@ public abstract class AbstractRestaurantController {
     public void enable(int id, boolean enabled) {
         log.info(enabled ? "enable {}" : "disable {}", id);
         Restaurant restaurant = restaurantRepository.getById(id);
+        if (!enabled) {
+            voteRepository.deleteByRestaurantIdAndDate(id, LocalDate.now());
+        }
         restaurant.setEnabled(enabled);
     }
 
     @Transactional
-    public RestaurantWithVisitors findWithVisitorsByRestaurantAndDate(@RequestParam int restaurantId, @RequestParam @Nullable @DateTimeFormat(pattern = DateTimeUtil.DATE_PATTERN) LocalDate date) {
+    public String countVisitorsByRestaurantAndDate(@RequestParam int restaurantId, @RequestParam @Nullable @DateTimeFormat(pattern = DateTimeUtil.DATE_PATTERN) LocalDate date) {
         LocalDate localDate = atDayOrNow(date);
-        log.info("findWithVisitorsByRestaurantAndDate for restaurantId={} and date={}", restaurantId, localDate);
-        Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
+        log.info("countVisitorsByRestaurantAndDate for restaurantId={} and date={}", restaurantId, localDate);
+        restaurantRepository.getExisted(restaurantId);
         restaurantRepository.checkAvailable(restaurantId);
-        int visitorsCount = voteRepository.countByDateAndRestaurantId(localDate, restaurantId);
-        return new RestaurantWithVisitors(restaurant.id(), restaurant.getName(), restaurant.getAddress(), visitorsCount);
+        int votesCount = voteRepository.countByDateAndRestaurantId(localDate, restaurantId);
+        return JsonUtil.writeValue(Map.of("visitors", votesCount));
     }
 }

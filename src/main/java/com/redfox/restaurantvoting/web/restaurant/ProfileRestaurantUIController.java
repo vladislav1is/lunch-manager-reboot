@@ -1,14 +1,13 @@
 package com.redfox.restaurantvoting.web.restaurant;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.redfox.restaurantvoting.View;
 import com.redfox.restaurantvoting.model.Restaurant;
 import com.redfox.restaurantvoting.model.Vote;
 import com.redfox.restaurantvoting.repository.RestaurantRepository;
 import com.redfox.restaurantvoting.repository.VoteRepository;
 import com.redfox.restaurantvoting.service.VoteService;
 import com.redfox.restaurantvoting.to.RestaurantWithVisitors;
-import com.redfox.restaurantvoting.util.validation.Validations;
+import com.redfox.restaurantvoting.to.RestaurantWithVote;
+import com.redfox.restaurantvoting.util.JsonUtil;
 import com.redfox.restaurantvoting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
@@ -25,6 +24,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.redfox.restaurantvoting.service.VoteService.checkDeadline;
+
 @Hidden
 @RestController
 @RequestMapping(value = ProfileRestaurantUIController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -38,19 +39,19 @@ public class ProfileRestaurantUIController extends AbstractRestaurantController 
     private final VoteRepository voteRepository;
     private final VoteService voteService;
 
-    @Override
     @GetMapping
-    public List<Restaurant> getAllEnabled() {
-        return super.getAllEnabled();
+    public List<RestaurantWithVote> getAllEnabledWithUserVote(@AuthenticationPrincipal AuthUser authUser) {
+        return super.getAllEnabledWithUserVote(authUser.id());
     }
 
     @Transactional
     @GetMapping("/{id}")
-    public List<Restaurant> getRestaurant(@PathVariable int id) {
-        log.info("get for restaurantId={}", id);
+    public String getWithVisitors(@PathVariable int id) {
+        log.info("getWithVisitors for id={}", id);
         Restaurant restaurant = restaurantRepository.getExisted(id);
         restaurantRepository.checkAvailable(id);
-        return List.of(restaurant);
+        int votesCount = voteRepository.countByDateAndRestaurantId(LocalDate.now(), id);
+        return JsonUtil.writeValue(List.of(new RestaurantWithVisitors(restaurant.id(), restaurant.getName(), restaurant.getAddress(), votesCount)));
     }
 
     @Transactional
@@ -61,7 +62,7 @@ public class ProfileRestaurantUIController extends AbstractRestaurantController 
         LocalDateTime now = LocalDateTime.now();
         Optional<Vote> dbVote = voteRepository.findByDateAndUserId(LocalDate.now(), authUser.id());
         if (dbVote.isPresent()) {
-            Validations.checkDeadline(now.toLocalTime(), voteService.getDeadline());
+            checkDeadline(now.toLocalTime(), voteService.getDeadline());
             Vote vote = dbVote.get();
             vote.setActualTime(now.toLocalTime());
             vote.setRestaurantId(id);
@@ -78,9 +79,8 @@ public class ProfileRestaurantUIController extends AbstractRestaurantController 
         voteService.deleteVote(authUser.getUser());
     }
 
-    @GetMapping("/{id}/count-visitors")
-    @JsonView(View.RestaurantVisitors.class)
-    public ResponseEntity<RestaurantWithVisitors> countVisitorsForToday(@PathVariable int id) {
-        return ResponseEntity.ok(super.findWithVisitorsByRestaurantAndDate(id, LocalDate.now()));
+    @GetMapping("/{id}/count-visitors-today")
+    public ResponseEntity<String> countVisitorsForToday(@PathVariable int id) {
+        return ResponseEntity.ok(super.countVisitorsByRestaurantAndDate(id, LocalDate.now()));
     }
 }

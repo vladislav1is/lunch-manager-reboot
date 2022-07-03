@@ -7,21 +7,23 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Value
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class RestaurantWithVisitors extends NamedTo implements HasRestaurantConstraint {
+public class RestaurantWithVote extends NamedTo implements HasRestaurantConstraint {
 
-    public RestaurantWithVisitors(Integer id, String name, String address, int visitors) {
+    public RestaurantWithVote(Integer id, String name, String address, boolean voted) {
         super(id, name);
         this.address = address;
-        this.visitors = visitors;
+        this.voted = voted;
     }
 
     @Size(max = 1024)
     @NoHtml
     @NotBlank
-    String address;
+    private String address;
 
-    int visitors;
+    private boolean voted;
 }

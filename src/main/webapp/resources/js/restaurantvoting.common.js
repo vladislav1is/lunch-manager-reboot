@@ -149,12 +149,9 @@ function vote() {
 function updateVisitors() {
     $.ajax({
         type: "GET",
-        url: ctx.ajaxUrl + "count-visitors",
-        data: {
-            "restaurantId": restaurantId
-        },
+        url: ctx.ajaxUrl + "count-visitors-today",
         success: function (data) {
-            $('#votesCount').text(data.visitors);
+            $('#visitors').text(data.visitors);
         },
     });
 }

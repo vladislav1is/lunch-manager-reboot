@@ -4,6 +4,7 @@ import com.redfox.restaurantvoting.model.DishRef;
 import com.redfox.restaurantvoting.model.MenuItem;
 import com.redfox.restaurantvoting.model.Restaurant;
 import com.redfox.restaurantvoting.to.RestaurantWithMenu;
+import com.redfox.restaurantvoting.to.RestaurantWithVote;
 import com.redfox.restaurantvoting.web.MatcherFactory;
 import com.redfox.restaurantvoting.web.MatcherFactory.Matcher;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class RestaurantTestData {
     public static final Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "menuItems");
     public static final Matcher<RestaurantWithMenu> RESTAURANT_MATCHER_WITH_MENU = MatcherFactory.usingIgnoringFieldsComparator(RestaurantWithMenu.class, "dishRefs.restaurant");
+    public static final Matcher<RestaurantWithVote> RESTAURANT_MATCHER_WITH_VOTE = MatcherFactory.usingIgnoringFieldsComparator(RestaurantWithVote.class);
 
     public static final Matcher<MenuItem> MENUITEM_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(MenuItem.class, "restaurant", "dishRef");
     public static final Matcher<DishRef> DISH_REF_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(DishRef.class, "restaurant");

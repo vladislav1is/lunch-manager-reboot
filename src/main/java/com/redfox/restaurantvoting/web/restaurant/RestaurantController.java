@@ -2,13 +2,15 @@ package com.redfox.restaurantvoting.web.restaurant;
 
 import com.redfox.restaurantvoting.model.Restaurant;
 import com.redfox.restaurantvoting.to.RestaurantWithMenu;
-import com.redfox.restaurantvoting.to.RestaurantWithVisitors;
+import com.redfox.restaurantvoting.to.RestaurantWithVote;
 import com.redfox.restaurantvoting.util.DateTimeUtil;
+import com.redfox.restaurantvoting.web.AuthUser;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,11 @@ public class RestaurantController extends AbstractRestaurantController {
         return super.getAllEnabled();
     }
 
+    @GetMapping("/vote-today")
+    public List<RestaurantWithVote> getAllEnabledWithUserVote(@AuthenticationPrincipal AuthUser authUser) {
+        return super.getAllEnabledWithUserVote(authUser.id());
+    }
+
     @Override
     @GetMapping("/menu-today")
     public List<RestaurantWithMenu> getWithMenuForToday() {
@@ -43,12 +50,12 @@ public class RestaurantController extends AbstractRestaurantController {
         if (restaurant.isEmpty()) {
             return ResponseEntity.of(Optional.empty());
         } else {
-            return ResponseEntity.ok(restaurantMapper.toTo(restaurant.get()));
+            return ResponseEntity.ok(restaurantWithMenuMapper.toTo(restaurant.get()));
         }
     }
 
-    @GetMapping("/{id}/visitors-today")
-    public ResponseEntity<RestaurantWithVisitors> getWithVisitorsByRestaurantAndDate(@PathVariable int id, @RequestParam @DateTimeFormat(pattern = DateTimeUtil.DATE_PATTERN) @Nullable LocalDate date) {
-        return ResponseEntity.ok(super.findWithVisitorsByRestaurantAndDate(id, date));
+    @GetMapping("/{id}/count-visitors-by-date")
+    public ResponseEntity<String> countVisitorsForToday(@PathVariable int id, @RequestParam @DateTimeFormat(pattern = DateTimeUtil.DATE_PATTERN) @Nullable LocalDate date) {
+        return ResponseEntity.ok(super.countVisitorsByRestaurantAndDate(id, date));
     }
 }

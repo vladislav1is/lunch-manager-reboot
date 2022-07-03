@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface RestaurantMapper extends BaseMapper<Restaurant, RestaurantWithMenu> {
+public interface RestaurantWithMenuMapper extends BaseMapper<Restaurant, RestaurantWithMenu> {
 
     @Mapping(target = "dishRefs", expression = "java(getDishRefs(restaurant))")
     @Override

@@ -10,7 +10,6 @@
 <body>
 <script type="text/javascript" defer>
     const restaurantId = ${restaurantId};
-    let votesCount = ${votesCount};
 </script>
 <script type="text/javascript" src="resources/js/restaurantvoting.common.js" defer></script>
 <script type="text/javascript" src="resources/js/restaurantvoting.restaurant-vote.js" defer></script>

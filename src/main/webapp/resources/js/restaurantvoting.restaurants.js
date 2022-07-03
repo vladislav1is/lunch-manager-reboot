@@ -37,7 +37,7 @@ $(function () {
             ],
         "createdRow":
             function (row, data) {
-                if (Object.is(data.id, userVote.restaurantId)) {
+                if (data.voted === true) {
                     $(row).attr("class", "data-voted font-weight-bold")
                 }
             }

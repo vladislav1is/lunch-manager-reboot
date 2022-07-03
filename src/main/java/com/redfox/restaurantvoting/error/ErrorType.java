@@ -8,8 +8,9 @@ public enum ErrorType {
     DEADLINE("error.deadline"),
     NOT_VOTED("error.notVoted"),
     ALREADY_VOTED("error.alreadyVoted"),
-    RESTAURANT_CONSTRAINT_VIOLATION("error.restaurantConstraintViolation"),
     DISH_REF_CONSTRAINT_VIOLATION("error.dishRefConstraintViolation"),
+    DISH_REF_USAGE_ERROR("error.dishRefUsage"),
+    VOTE_USAGE_ERROR("error.voteUsage"),
     VALIDATION_ERROR("error.validationError"),
     WRONG_REQUEST("error.wrongRequest"),
     FORBIDDEN("error.forbidden");

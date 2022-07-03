@@ -1,12 +1,12 @@
 package com.redfox.restaurantvoting.service;
 
 import com.redfox.restaurantvoting.error.vote.AlreadyVotedException;
+import com.redfox.restaurantvoting.error.vote.DeadlineException;
 import com.redfox.restaurantvoting.error.vote.NotVotedException;
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.model.Vote;
 import com.redfox.restaurantvoting.repository.RestaurantRepository;
 import com.redfox.restaurantvoting.repository.VoteRepository;
-import com.redfox.restaurantvoting.util.validation.Validations;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -54,9 +54,15 @@ public class VoteService {
     }
 
     private Vote findVote(User user, LocalDateTime now) {
-        Validations.checkDeadline(now.toLocalTime(), deadline);
+        checkDeadline(now.toLocalTime(), deadline);
         Optional<Vote> dbVote = repository.findByDateAndUserId(now.toLocalDate(), user.id());
         return dbVote.orElseThrow(() -> new NotVotedException("Have not voted today"));
+    }
+
+    public static void checkDeadline(LocalTime now, LocalTime deadline) {
+        if (now.isAfter(deadline)) {
+            throw new DeadlineException("Deadline for change vote has passed");
+        }
     }
 
     @Transactional

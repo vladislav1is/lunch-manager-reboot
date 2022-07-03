@@ -25,9 +25,9 @@ $(function () {
             {
                 "data": function (data, type, row) {
                     if (type === "display") {
-                        return '<div id="votesCount">' + votesCount + '</div>'
+                        return '<div id="visitors">' + data.visitors + '</div>'
                     }
-                    return votesCount;
+                    return data.visitors;
                 }
             }
         ],

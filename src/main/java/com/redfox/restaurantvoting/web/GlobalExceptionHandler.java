@@ -5,7 +5,8 @@ import com.redfox.restaurantvoting.error.DataConflictException;
 import com.redfox.restaurantvoting.error.DataDisabledException;
 import com.redfox.restaurantvoting.error.ErrorType;
 import com.redfox.restaurantvoting.error.restaurant.DishRefConstraintViolationException;
-import com.redfox.restaurantvoting.error.restaurant.RestaurantConstraintViolationException;
+import com.redfox.restaurantvoting.error.restaurant.DishRefUsageException;
+import com.redfox.restaurantvoting.error.restaurant.VoteUsageException;
 import com.redfox.restaurantvoting.error.vote.AlreadyVotedException;
 import com.redfox.restaurantvoting.error.vote.DeadlineException;
 import com.redfox.restaurantvoting.error.vote.NotVotedException;
@@ -94,10 +95,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.ALREADY_VOTED);
     }
 
-    @ExceptionHandler(RestaurantConstraintViolationException.class)
-    public ResponseEntity<?> restaurantConstraintViolationException(WebRequest request, RestaurantConstraintViolationException exception) {
-        log.error("RestaurantConstraintViolationException: {}", exception.getMessage());
-        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.RESTAURANT_CONSTRAINT_VIOLATION);
+    @ExceptionHandler(VoteUsageException.class)
+    public ResponseEntity<?> voteUsageException(WebRequest request, VoteUsageException exception) {
+        log.error("VoteUsageException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.VOTE_USAGE_ERROR);
+    }
+
+    @ExceptionHandler(DishRefUsageException.class)
+    public ResponseEntity<?> dishRefUsageException(WebRequest request, DishRefUsageException exception) {
+        log.error("DishRefUsageException: {}", exception.getMessage());
+        return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), HttpStatus.CONFLICT, ErrorType.DISH_REF_USAGE_ERROR);
     }
 
     @ExceptionHandler(DishRefConstraintViolationException.class)

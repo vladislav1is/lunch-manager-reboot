@@ -6,6 +6,4 @@ public class View {
     public interface MenuItemWithoutEnabled {}
 
     public interface MenuItemWithoutRestaurantId {}
-
-    public interface RestaurantVisitors {}
 }

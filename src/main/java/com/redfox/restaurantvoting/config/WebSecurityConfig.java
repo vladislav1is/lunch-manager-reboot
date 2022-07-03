@@ -109,6 +109,7 @@ public class WebSecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.antMatcher("/api/**").authorizeRequests()
+                    .antMatchers(HttpMethod.GET, "/api/restaurants/vote-today").hasRole(Role.USER.name())
                     .antMatchers("/api/restaurants/**").permitAll()
                     .antMatchers(AdminRestaurantController.REST_URL + "/**").hasAnyRole(Role.R_ADMIN.name(), Role.ADMIN.name())
                     .antMatchers(HttpMethod.POST, "/api/profile").anonymous()
