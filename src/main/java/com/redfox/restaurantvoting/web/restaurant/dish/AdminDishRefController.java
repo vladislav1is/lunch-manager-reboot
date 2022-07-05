@@ -27,7 +27,7 @@ import static com.redfox.restaurantvoting.util.validation.Validations.checkNew;
 @AllArgsConstructor
 @Slf4j
 public class AdminDishRefController {
-    static final String REST_URL =  AdminRestaurantController.REST_URL + "/{restaurantId}/dish-ref";
+    static final String REST_URL =  AdminRestaurantController.REST_URL + "/{restaurantId}/dish-refs";
 
     private final DishRefRepository repository;
     private final DishRefService service;

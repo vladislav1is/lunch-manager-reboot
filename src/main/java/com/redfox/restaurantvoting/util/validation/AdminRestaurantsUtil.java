@@ -26,7 +26,7 @@ public class AdminRestaurantsUtil {
             int restaurantId = Integer.parseInt(matcher.group(3));
             log.info("{} request for restaurant {}", user.out(), restaurantId);
             if (!user.getAdminRestaurants().contains(restaurantId)) {
-                throw new AccessDeniedException("You have no rights for restaurant " + restaurantId);
+                throw new AccessDeniedException("User '" + user.getEmail() + "' has no rights to restaurant '" + restaurantId);
             }
         }
     }

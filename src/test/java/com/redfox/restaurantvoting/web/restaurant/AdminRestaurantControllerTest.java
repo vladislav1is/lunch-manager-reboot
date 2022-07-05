@@ -58,7 +58,9 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = R_ADMIN_MAIL)
     void getNotBelong() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + MAC_ID))
+        String servletPath = REST_URL + MAC_ID;
+        perform(MockMvcRequestBuilders.get(servletPath)
+                .servletPath(servletPath))
                 .andExpect(status().isForbidden());
     }
 

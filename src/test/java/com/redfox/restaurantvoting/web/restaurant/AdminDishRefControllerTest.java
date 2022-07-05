@@ -25,11 +25,11 @@ class AdminDishRefControllerTest extends AbstractControllerTest {
     private DishRefRepository dishRefRepository;
 
     private String getUrl(int restaurantId) {
-        return REST_URL + restaurantId + "/dish-ref/";
+        return REST_URL + restaurantId + "/dish-refs";
     }
 
     private String getUrl(int restaurantId, int id) {
-        return getUrl(restaurantId) + id;
+        return getUrl(restaurantId) + "/" + id;
     }
 
     @Test
@@ -48,7 +48,9 @@ class AdminDishRefControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = R_ADMIN_MAIL)
     void getNotBelong() throws Exception {
-        perform(MockMvcRequestBuilders.get(getUrl(MAC_ID)))
+        String servletPath = getUrl(MAC_ID);
+        perform(MockMvcRequestBuilders.get(servletPath)
+                .servletPath(servletPath))
                 .andExpect(status().isForbidden());
     }
 

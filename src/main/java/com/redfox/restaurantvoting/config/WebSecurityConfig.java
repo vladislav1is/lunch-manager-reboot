@@ -1,9 +1,10 @@
 package com.redfox.restaurantvoting.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.redfox.restaurantvoting.error.DataDisabledException;
 import com.redfox.restaurantvoting.model.Role;
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.UserRepository;
+import com.redfox.restaurantvoting.util.JsonUtil;
 import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import com.redfox.restaurantvoting.web.AuthUser;
 import com.redfox.restaurantvoting.web.GlobalExceptionHandler;
@@ -26,6 +27,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -64,8 +67,16 @@ public class WebSecurityConfig {
         return email -> {
             log.debug("Authenticating '{}'", email);
             Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
-            return new AuthUser(optionalUser.orElseThrow(
-                    () -> new UsernameNotFoundException("User '" + email + "' was not found")));
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                if (!user.isEnabled()) {
+                    throw new DataDisabledException("User '" + email + "' is disabled");
+                } else {
+                    return new AuthUser(user);
+                }
+            } else {
+                throw new UsernameNotFoundException("User '" + email + "' not found");
+            }
         };
     }
 
@@ -79,27 +90,80 @@ public class WebSecurityConfig {
         return new OncePerRequestFilter() {
             @Override
             protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-                AuthUser authUser = SecurityUtil.safeGet();
-                if (authUser != null && authUser.hasRole(Role.R_ADMIN)) {
-                    try {
-                        AdminRestaurantsUtil.checkRequestAccess(authUser.getUser(), request.getRequestURI());
-                    } catch (AccessDeniedException exception) {
-                        ResponseEntity<?> responseEntity = globalExceptionHandler.accessDeniedException(new DispatcherServletWebRequest(request, response), exception);
-
-                        response.setStatus(responseEntity.getStatusCode().value());
-                        response.setContentType("application/json");
-                        response.setLocale(request.getLocale());
-
-                        ObjectMapper mapper = new ObjectMapper();
-                        PrintWriter out = response.getWriter();
-                        out.print(mapper.writeValueAsString(responseEntity.getBody()));
-                        out.flush();
-                        return;
+                try {
+                    AuthUser authUser = SecurityUtil.safeGet();
+                    if (authUser != null) {
+                        checkAuthUserAccess(request, authUser);
                     }
+                    filterChain.doFilter(request, response);
+                } catch (UsernameNotFoundException usernameNotFoundException) {
+                    ResponseEntity<?> responseEntity = globalExceptionHandler.usernameNotFoundException(
+                            new DispatcherServletWebRequest(request, response), usernameNotFoundException);
+                    filterExceptionHandler(request, response, responseEntity);
+                } catch (DataDisabledException dataDisabledException) {
+                    ResponseEntity<?> responseEntity = globalExceptionHandler.dataDisabledException(
+                            new DispatcherServletWebRequest(request, response), dataDisabledException);
+                    filterExceptionHandler(request, response, responseEntity);
+                } catch (AuthenticationException authenticationException) {
+                    ResponseEntity<?> responseEntity = globalExceptionHandler.authenticationException(
+                            new DispatcherServletWebRequest(request, response), authenticationException);
+                    filterExceptionHandler(request, response, responseEntity);
+                } catch (AccessDeniedException accessDeniedException) {
+                    ResponseEntity<?> responseEntity = globalExceptionHandler.accessDeniedException(
+                            new DispatcherServletWebRequest(request, response), accessDeniedException);
+                    filterExceptionHandler(request, response, responseEntity);
                 }
-                filterChain.doFilter(request, response);
             }
         };
+    }
+
+    private void checkAuthUserAccess(HttpServletRequest request, AuthUser authUser) {
+        if (authUser.hasRole(Role.USER)) {
+            Optional<User> dbUser = userRepository.findById(authUser.id());
+            User currentUser = authUser.getUser();
+            if (dbUser.isPresent()) {
+                User updated = dbUser.get();
+                updateAuthUser(updated, authUser);
+                if (authUser.hasRole(Role.R_ADMIN)) {
+                    AdminRestaurantsUtil.checkRequestAccess(currentUser, request.getRequestURI());
+                }
+            } else {
+                throw new UsernameNotFoundException("User '" + currentUser.getEmail() + "' not found");
+            }
+        }
+    }
+
+    private void updateAuthUser(User updated, AuthUser authUser) {
+        User current = authUser.getUser();
+        String email = current.getEmail();
+        if (!updated.isEnabled()) {
+            throw new DataDisabledException("User '" + email + "' is disabled");
+        } else if (!current.getRoles().equals(updated.getRoles())) {
+            throw new AuthenticationException("User '" + email + " has new roles") {
+                @Override
+                public String getMessage() {
+                    return super.getMessage();
+                }
+            };
+        } else {
+            authUser.setUser(updated);
+        }
+    }
+
+    private void filterExceptionHandler(HttpServletRequest request, HttpServletResponse response, ResponseEntity<?> responseEntity) throws IOException {
+        String servletPath = request.getServletPath().split("/")[1];
+        SecurityContextHolder.clearContext();
+        if (servletPath.equals("api")) {
+            response.setStatus(responseEntity.getStatusCode().value());
+            response.setContentType("application/json");
+
+            PrintWriter out = response.getWriter();
+            out.print(JsonUtil.writeValue(responseEntity.getBody()));
+            out.flush();
+            out.close();
+        } else {
+            response.sendRedirect(request.getContextPath() + "/login");
+        }
     }
 
     @Configuration
