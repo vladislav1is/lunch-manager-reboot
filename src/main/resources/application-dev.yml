@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    # ImMemory
+    url: jdbc:h2:mem:voting
+    #    tcp: jdbc:h2:tcp://localhost:9092/mem:voting
+    username: sa
+    password:
+  # https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
+  cache:
+    cache-names: users,allEnabledRestaurants,allRestaurantsWithMenu,restaurantWithMenu
+    # https://www.javadoc.io/static/com.github.ben-manes.caffeine/caffeine/2.1.0/com/github/benmanes/caffeine/cache/Caffeine.html
+    caffeine.spec: maximumSize=5000,expireAfterAccess=600s
+  # https://docs.liquibase.com/concepts/changelogs/sql-format.html
+  liquibase:
+    changeLog: "classpath:db/changelog-h2.sql"

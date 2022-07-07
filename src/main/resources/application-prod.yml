@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/restaurant-voting
+    username: user
+    password: password
+  cache:
+    cache-names: users,allEnabledRestaurants,allRestaurantsWithMenu,restaurantWithMenu
+    caffeine.spec: maximumSize=5000,expireAfterAccess=600s
+  liquibase:
+    changeLog: "classpath:db/changelog-postgre.sql"
+    drop-first: true

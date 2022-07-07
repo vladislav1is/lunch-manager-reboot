@@ -1,1 +1,10 @@
-spring.cache.type: none
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:voting
+    username: sa
+    password:
+  cache:
+    type: none
+  liquibase:
+    changeLog: "classpath:db/changelog-h2.sql"

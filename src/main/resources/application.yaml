@@ -2,13 +2,13 @@ app.deadline: "11:00"
 
 # https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 spring:
+  profiles:
+    active: @spring.profiles.active@
   main:
     allow-bean-definition-overriding: true
   jpa:
     show-sql: true
     open-in-view: false
-#    # https://stackoverflow.com/a/67678945/548473
-#    defer-datasource-initialization: true
     hibernate:
       ddl-auto: validate
     properties:
@@ -18,22 +18,6 @@ spring:
         default_batch_fetch_size: 20
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
-  datasource:
-    # ImMemory
-    url: jdbc:h2:mem:voting
-    #    tcp: jdbc:h2:tcp://localhost:9092/mem:voting
-    username: sa
-    password:
-  # https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
-  cache:
-    cache-names: users,allEnabledRestaurants,allRestaurantsWithMenu,restaurantWithMenu
-    # https://www.javadoc.io/static/com.github.ben-manes.caffeine/caffeine/2.1.0/com/github/benmanes/caffeine/cache/Caffeine.html
-    caffeine.spec: maximumSize=5000,expireAfterAccess=600s
-
-  # https://docs.liquibase.com/concepts/changelogs/sql-format.html
-  liquibase:
-    changeLog: "classpath:db/changelog.sql"
-
   mvc:
     throw-exception-if-no-handler-found: true
 

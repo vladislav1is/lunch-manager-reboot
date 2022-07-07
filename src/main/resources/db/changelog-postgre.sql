@@ -1,9 +1,9 @@
 --liquibase formatted sql
 
---changeset vLisin:init_schema
+--changeset vLisin:init_schema dbms: postgresql
 create table USERS
 (
-    ID         INTEGER auto_increment primary key,
+    ID         SERIAL primary key,
     NAME       VARCHAR(100)            not null,
     EMAIL      VARCHAR(100)            not null constraint USERS_UK unique,
     ENABLED    BOOL      default TRUE  not null,
@@ -21,7 +21,7 @@ create table USER_ROLES
 
 create table RESTAURANT
 (
-    ID      INTEGER auto_increment primary key,
+    ID      SERIAL primary key,
     NAME    VARCHAR(100)      not null,
     ADDRESS VARCHAR(1024),
     ENABLED BOOL default TRUE not null,
@@ -30,7 +30,7 @@ create table RESTAURANT
 
 create table DISH_REF
 (
-    ID            INTEGER auto_increment primary key,
+    ID      SERIAL primary key,
     NAME          VARCHAR(100)      not null,
     ENABLED       BOOL default TRUE not null,
     PRICE         INTEGER           not null,
@@ -41,7 +41,7 @@ create table DISH_REF
 
 create table MENU_ITEM
 (
-    ID            INTEGER auto_increment primary key,
+    ID      SERIAL primary key,
     ACTUAL_DATE   DATE not null,
     DISH_REF_ID   INTEGER,
     RESTAURANT_ID INTEGER,
@@ -52,7 +52,7 @@ create table MENU_ITEM
 
 create table VOTE
 (
-    ID            INTEGER auto_increment primary key,
+    ID            SERIAL primary key,
     ACTUAL_DATE   DATE    not null,
     ACTUAL_TIME   TIME    not null,
     RESTAURANT_ID INTEGER,
