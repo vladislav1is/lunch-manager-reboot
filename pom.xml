@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.redfox</groupId>
-    <artifactId>restaurant-voting</artifactId>
+    <artifactId>lunch-manager-reboot</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
 

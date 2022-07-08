@@ -31,7 +31,7 @@ logging:
 
 server:
   servlet:
-    context-path: /restaurant-voting
+    context-path: /lunch-manager-reboot
     encoding:
       charset: UTF-8 # Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly
       enabled: true  # Enable http encoding support

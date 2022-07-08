@@ -29,7 +29,7 @@ import static com.redfox.restaurantvoting.util.DateTimeUtil.*;
                 title = "REST API documentation",
                 version = "1.0",
                 description = """
-                        Graduation project <a href='https://github.com/vladislav1is/restaurant-voting'>Lunch Manager</a>
+                        Graduation project <a href='https://github.com/vladislav1is/lunch-manager-reboot'>Lunch Manager</a>
                         <p><b>Test credentials:</b><br>
                         - user@yandex.ru / password<br>
                         - admin@gmail.com / admin</p>

@@ -115,14 +115,14 @@ public abstract class AbstractMenuItemController {
     }
 
     public List<MenuItem> findAllByDates(int restaurantId, LocalDate startDate, LocalDate endDate) {
-        log.info("findAllByDates for restaurantId={} and dates=({} - {})", restaurantId, startDate, endDate);
+        log.info("findAllByDates for restaurantId={} and dates=({}-{})", restaurantId, startDate, endDate);
         return menuItemRepository.getAllByRestaurantIdAndDates(restaurantId, startDate, endDate);
     }
 
     public List<MenuItem> findAllWithDishByDates(int restaurantId, @Nullable String startDate, @Nullable String endDate) {
-        log.info("findAllWithDishByDates for restaurantId={} and dates=({} - {})", restaurantId, startDate, endDate);
-        LocalDate ldStartDate = StringUtils.hasLength(startDate) ? LocalDate.parse(startDate, DateTimeUtil.DATE_FORMATTER) : null;
-        LocalDate ldEndDate = StringUtils.hasLength(endDate) ? LocalDate.parse(endDate, DateTimeUtil.DATE_FORMATTER) : null;
-        return menuItemRepository.getAllWithDishByDatesAndRestaurantId(restaurantId, atDayOrMin(ldStartDate), atNextDayOrMax(ldEndDate));
+        LocalDate ldStartDate = atDayOrMin(StringUtils.hasLength(startDate) ? LocalDate.parse(startDate, DateTimeUtil.DATE_FORMATTER) : null);
+        LocalDate ldEndDate = atNextDayOrMax(StringUtils.hasLength(endDate) ? LocalDate.parse(endDate, DateTimeUtil.DATE_FORMATTER) : null);
+        log.info("findAllWithDishByDates for restaurantId={} and dates=({}-{})", restaurantId, ldStartDate, ldEndDate);
+        return menuItemRepository.getAllWithDishByDatesAndRestaurantId(restaurantId, ldStartDate, ldEndDate);
     }
 }

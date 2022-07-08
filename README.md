@@ -34,7 +34,7 @@ P.S.: Предположим, что API будет использоваться
 
 ## Описание (API)
 
-curl samples (application deployed at application context `restaurant-voting`).
+curl samples (application deployed at application context `lunch-manager-reboot`).
 > For windows use `Git Bash`
 
-[REST API documentation](http://localhost:8080/restaurant-voting/swagger-ui.html)
+[REST API documentation](http://localhost:8080/lunch-manager-reboot/swagger-ui.html)
