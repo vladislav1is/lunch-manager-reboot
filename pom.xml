@@ -22,8 +22,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- MapStruct -->
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <!-- DataBase -->
-        <postgresql.version>42.3.3</postgresql.version>
         <!-- Webjars -->
         <webjars-bootstrap.version>4.6.0-1</webjars-bootstrap.version>
         <webjars-jquery.version>3.6.0</webjars-jquery.version>
@@ -196,26 +194,68 @@
         </profile>
         <profile>
             <id>prod</id>
+            <properties>
+                <spring.profiles.active>prod</spring.profiles.active>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
-                    <version>${postgresql.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-data-jpa</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>com.zaxxer</groupId>
+                            <artifactId>HikariCP</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-jdbc</artifactId>
                 </dependency>
             </dependencies>
-            <properties>
-                <spring.profiles.active>prod</spring.profiles.active>
-            </properties>
+            <!-- https://devcenter.heroku.com/articles/java-webapp-runner -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals><goal>copy</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <!-- https://github.com/jsimone/webapp-runner#using-without-memcached-or-redis -->
+                                        <artifactItem>
+                                            <groupId>com.heroku</groupId>
+                                            <artifactId>webapp-runner-main</artifactId>
+                                            <version>9.0.52.1</version>
+                                            <destFileName>webapp-runner.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <!-- Exclude from jar -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <executable>true</executable>
+                    <jvmArguments>-Dfile.encoding=UTF8</jvmArguments>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

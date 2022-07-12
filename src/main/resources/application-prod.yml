@@ -1,9 +1,26 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/lunch-manager-reboot
-    username: user
-    password: password
+    type: org.apache.tomcat.jdbc.pool.DataSource
+    #    https://devcenter.heroku.com/articles/connecting-to-relational-databases-on-heroku-with-java#using-the-jdbc_database_url-in-a-spring-boot-app
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/lunch-manager-reboot}
+    username: ${JDBC_DATABASE_USERNAME:user}
+    password: ${JDBC_DATABASE_PASSWORD:password}
+    tomcat:
+      max-active: 10
+      max-idle: 5
+      min-idle: 2
+      initial-size: 5
+      max-wait: 20000
+      test-on-connect: true
+      test-on-borrow: true
+      remove-abandoned: true
+      test-while-idle: true
+      validation-query: "SELECT 1"
+      default-auto-commit: true
+  jpa:
+    hibernate:
+      ddl-auto: none
   cache:
     cache-names: users,allEnabledRestaurants,allRestaurantsWithMenu,restaurantWithMenu
     caffeine.spec: maximumSize=5000,expireAfterAccess=600s
