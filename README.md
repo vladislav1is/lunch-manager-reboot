@@ -3,6 +3,8 @@
 Менеджер обеда
 ===============================
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6b0bda47d0754a5498a117b6e6a1bdf7)](https://app.codacy.com/gh/vladislav1is/lunch-manager-reboot?utm_source=github.com&utm_medium=referral&utm_content=vladislav1is/lunch-manager-reboot&utm_campaign=Badge_Grade_Settings)
+
 ##### Выпускной проект стажировки [Java Online Projects](https://javaops.ru/view/topjava)
 - Исходный код взят из **TopJava**;
 - **Менеджер обеда** выполнялся на основе этого репозитория;
