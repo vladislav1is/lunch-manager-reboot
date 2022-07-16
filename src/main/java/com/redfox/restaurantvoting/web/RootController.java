@@ -69,10 +69,8 @@ public class RootController {
     public String editDishes(@PathVariable int restaurantId, Model model, @AuthenticationPrincipal AuthUser authUser) {
         setRestaurantAttributes(restaurantId, model);
         User user = authUser.getUser();
-        if (user.hasRole(Role.R_ADMIN)) {
-            if (!user.getAdminRestaurants().contains(restaurantId)) {
-                throw new AccessDeniedException("You have no rights for restaurant " + restaurantId);
-            }
+        if (user.hasRole(Role.R_ADMIN) && !user.getAdminRestaurants().contains(restaurantId)) {
+            throw new AccessDeniedException("You have no rights for restaurant " + restaurantId);
         }
         return "menu-items-editor";
     }

@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import java.util.Objects;
 
 @UtilityClass
-public class Restaurants {
+public class RestaurantUtil {
 
     public static Restaurant prepareToSave(Restaurant restaurant) {
         restaurant.setName(restaurant.getName().strip());

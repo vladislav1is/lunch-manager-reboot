@@ -16,6 +16,16 @@ import javax.validation.constraints.NotBlank;
 @ToString(callSuper = true)
 public class MenuItemTo extends NamedTo implements HasMenuItemToConstraint {
 
+    @NotBlank
+    @JsonView(View.MenuItemWithoutEnabled.class)
+    private String actualDate;
+
+    @Range(min = 1, max = 1000_000)
+    @JsonView(View.MenuItemWithoutEnabled.class)
+    private int price;
+
+    private boolean enabled = true;
+
     public MenuItemTo(Integer id, String name, String actualDate, int price, boolean enabled) {
         super(id, name);
         this.actualDate = actualDate;
@@ -27,14 +37,4 @@ public class MenuItemTo extends NamedTo implements HasMenuItemToConstraint {
     public MenuItemTo(Integer id, String name, String actualDate, int price) {
         this(id, name, actualDate, price, true);
     }
-
-    @NotBlank
-    @JsonView(View.MenuItemWithoutEnabled.class)
-    private String actualDate;
-
-    @Range(min = 1, max = 1000_000)
-    @JsonView(View.MenuItemWithoutEnabled.class)
-    private int price;
-
-    private boolean enabled = true;
 }

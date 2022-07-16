@@ -3,7 +3,7 @@ package com.redfox.restaurantvoting.web.user;
 import com.redfox.restaurantvoting.model.Role;
 import com.redfox.restaurantvoting.model.User;
 import com.redfox.restaurantvoting.repository.UserRepository;
-import com.redfox.restaurantvoting.util.Users;
+import com.redfox.restaurantvoting.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -60,7 +60,7 @@ public abstract class AbstractUserController {
     }
 
     protected User prepareAndSave(User user) {
-        return repository.save(Users.prepareToSave(user));
+        return repository.save(UserUtil.prepareToSave(user));
     }
 
     public void update(User user, int id) {

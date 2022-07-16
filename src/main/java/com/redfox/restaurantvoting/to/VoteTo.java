@@ -7,10 +7,10 @@ import lombok.*;
 @ToString(callSuper = true)
 public class VoteTo extends BaseTo {
 
+    int restaurantId;
+
     public VoteTo(Integer id, int restaurantId) {
         super(id);
         this.restaurantId = restaurantId;
     }
-
-    int restaurantId;
 }

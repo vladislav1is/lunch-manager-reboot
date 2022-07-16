@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-import static com.redfox.restaurantvoting.util.Users.PASSWORD_ENCODER;
+import static com.redfox.restaurantvoting.util.UserUtil.PASSWORD_ENCODER;
 
 @EnableWebSecurity()
 @EnableGlobalMethodSecurity(

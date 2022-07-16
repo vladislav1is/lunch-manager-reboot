@@ -16,16 +16,16 @@ import java.util.List;
 @ToString(callSuper = true)
 public class RestaurantWithMenu extends NamedTo implements HasRestaurantConstraint {
 
-    public RestaurantWithMenu(Integer id, String name, String address, List<DishRef> dishRefs) {
-        super(id, name);
-        this.address = address;
-        this.dishRefs = dishRefs;
-    }
-
     @Size(max = 1024)
     @NoHtml
     @NotBlank
     String address;
 
     List<DishRef> dishRefs;
+
+    public RestaurantWithMenu(Integer id, String name, String address, List<DishRef> dishRefs) {
+        super(id, name);
+        this.address = address;
+        this.dishRefs = dishRefs;
+    }
 }

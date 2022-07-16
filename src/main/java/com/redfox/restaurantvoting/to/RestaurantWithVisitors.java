@@ -12,16 +12,16 @@ import javax.validation.constraints.Size;
 @ToString(callSuper = true)
 public class RestaurantWithVisitors extends NamedTo implements HasRestaurantConstraint {
 
-    public RestaurantWithVisitors(Integer id, String name, String address, int visitors) {
-        super(id, name);
-        this.address = address;
-        this.visitors = visitors;
-    }
-
     @Size(max = 1024)
     @NoHtml
     @NotBlank
     String address;
 
     int visitors;
+
+    public RestaurantWithVisitors(Integer id, String name, String address, int visitors) {
+        super(id, name);
+        this.address = address;
+        this.visitors = visitors;
+    }
 }

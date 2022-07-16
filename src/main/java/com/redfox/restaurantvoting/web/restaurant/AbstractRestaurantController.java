@@ -14,7 +14,7 @@ import com.redfox.restaurantvoting.to.RestaurantWithMenu;
 import com.redfox.restaurantvoting.to.RestaurantWithVote;
 import com.redfox.restaurantvoting.util.DateTimeUtil;
 import com.redfox.restaurantvoting.util.JsonUtil;
-import com.redfox.restaurantvoting.util.Restaurants;
+import com.redfox.restaurantvoting.util.RestaurantUtil;
 import com.redfox.restaurantvoting.util.validation.AdminRestaurantsUtil;
 import com.redfox.restaurantvoting.web.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -141,7 +141,7 @@ public abstract class AbstractRestaurantController {
     }
 
     protected Restaurant prepareAndSave(Restaurant restaurant) {
-        return restaurantRepository.save(Restaurants.prepareToSave(restaurant));
+        return restaurantRepository.save(RestaurantUtil.prepareToSave(restaurant));
     }
 
     public void update(Restaurant restaurant, int id) {
